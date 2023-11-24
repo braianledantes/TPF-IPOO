@@ -1,39 +1,36 @@
 <?php
-include_once "BaseDatos.php";
+require_once __DIR__ . "/BaseDatos.php";
+require_once __DIR__ . "/ORM.php";
 
 class Modulo extends ORM
 {
     protected $id;
+    protected $idActividad;
     protected $descripcion;
     protected $topeInscripciones;
     protected $costo;
     protected $horarioInicio;
     protected $horarioCierre;
+    protected $inscripciones;
 
-    public function __construct()
-    {
-        $this->id = 0;
-        $this->descripcion = "";
-        $this->topeInscripciones = 0;
-        $this->costo = 0.0;
-        $this->horarioInicio = "";
-        $this->horarioCierre = "";
-    }
-
-    public function cargar(
+    public function __construct(
         $id,
+        $idActividad,
         $descripcion,
         $topeInscripciones,
         $costo,
         $horarioInicio,
         $horarioCierre
-    ) {
+    )
+    {
         $this->id = $id;
+        $this->idActividad = $idActividad;
         $this->descripcion = $descripcion;
         $this->topeInscripciones = $topeInscripciones;
         $this->costo = $costo;
         $this->horarioInicio = $horarioInicio;
         $this->horarioCierre = $horarioCierre;
+        $this->inscripciones = Modulo::listarInscripciones();
     }
 
     public function getId()
@@ -94,6 +91,16 @@ class Modulo extends ORM
     public function setHorarioCierre($horarioCierre)
     {
         $this->horarioCierre = $horarioCierre;
+    }
+
+    public function getInscripciones()
+    {
+        return $this->inscripciones;
+    }
+
+    public function setInscripciones($inscripciones)
+    {
+        $this->inscripciones = $inscripciones;
     }
 
     public function buscar($id)
@@ -217,5 +224,31 @@ class Modulo extends ORM
         }
 
         return $arrModulos;
+    }
+
+    public static function listarInscripciones() {
+        $db = new BaseDatos();
+        $consulta = "SELECT inscripcion.*
+                     FROM modulo_ingresante
+                     INNER JOIN inscripcion ON id_inscripcion = inscripcion.id";
+        $arrInscripciones = array();
+
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
+            // $this->setMensajeOperacion($db->getError());
+            return $arrInscripciones;
+        }
+
+        while ($registro = $db->Registro()) {
+            $inscripcion = new Inscripcion();
+            $inscripcion->cargar(
+                $registro['id'],
+                $registro['fecha'],
+                $registro['costo_final'],
+                $registro['legajo']
+            );
+            array_push($arrInscripciones, $inscripcion);
+        }
+
+        return $arrInscripciones;
     }
 }

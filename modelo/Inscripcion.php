@@ -1,5 +1,6 @@
 <?php
-include_once "BaseDatos.php";
+require_once __DIR__ . "/BaseDatos.php";
+require_once __DIR__ . "/ORM.php";
 
 class Inscripcion extends ORM
 {
@@ -7,12 +8,15 @@ class Inscripcion extends ORM
     private $fecha;
     private $costoFinal;
     private $ingresante;
+    private $modulos;
 
     public function __construct()
     {
         $this->id = 0;
         $this->fecha = "";
         $this->costoFinal = 0.0;
+        $this->ingresante = new Ingresante();
+        $this->modulos = array();
     }
 
     public function cargar($id, $fecha, $costoFinal, $legajo)
@@ -20,7 +24,6 @@ class Inscripcion extends ORM
         $this->id = $id;
         $this->fecha = $fecha;
         $this->costoFinal = $costoFinal;
-        $this->ingresante = new Ingresante();
         $this->ingresante->buscar($legajo);
     }
 
@@ -62,6 +65,16 @@ class Inscripcion extends ORM
     public function setIngresante($ingresante)
     {
         $this->ingresante = $ingresante;
+    }
+
+    public function getModulos()
+    {
+        return $this->modulos;
+    }
+
+    public function setModulos($modulos)
+    {
+        $this->modulos = $modulos;
     }
 
     public function __toString()

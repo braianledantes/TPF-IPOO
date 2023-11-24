@@ -1,5 +1,6 @@
 <?php
-include_once "BaseDatos.php";
+require_once __DIR__ . "/BaseDatos.php";
+require_once __DIR__ . "/Modulo.php";
 
 class ModuloEnLinea extends Modulo
 {
