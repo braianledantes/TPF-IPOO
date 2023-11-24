@@ -11,6 +11,13 @@ class ActividadControl
         return $resp;
     }
 
+    public static function existeActividad($id)
+    {
+        $actividad = new Actividad();
+        $resp = $actividad->buscar($id);
+        return $resp;
+    }
+
     public static function obtenerActividad($id)
     {
         $actividad = new Actividad();

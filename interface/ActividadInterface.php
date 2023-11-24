@@ -51,7 +51,12 @@ class ActividadInterface
         if (ActividadControl::crearActividad($descripcionCorta, $descripcionLarga)) {
             echo "| Actividad creada correctamente.\n";
         } else {
-            echo "| Error al crear la actividad.\n";
+            echo "\n\n";
+            echo "+/////////////////////////////+\n";
+            echo "// Error al crear actividad. //\n";
+            echo "+/////////////////////////////+\n";
+            echo "Presione Enter para continuar...";
+            fgets(STDIN);
         }
         echo "+---------------------------------------\n";
     }
@@ -66,7 +71,12 @@ class ActividadInterface
         if (ActividadControl::eliminarActividad($id)) {
             echo "| Actividad $id eliminada correctamente.\n";
         } else {
-            echo "| Error al eliminar actividad $id.\n";
+            echo "\n\n";
+            echo "+////////////////////////////////////+\n";
+            echo "// Error al eliminar actividad $id. //\n";
+            echo "+////////////////////////////////////+\n";
+            echo "Presione Enter para continuar...";
+            fgets(STDIN);
         }
         echo "+---------------------------------------\n";
     }
@@ -75,25 +85,37 @@ class ActividadInterface
     {
         echo "+- Modificar Actividad -----------------\n";
 
-        echo "| Ingrese la identificación de la actividad: ";
-        $id = trim(fgets(STDIN));
+        do {
+            echo "| Ingrese la identificación de la actividad: ";
+            $id = trim(fgets(STDIN));
+            $existeActividad = ActividadControl::existeActividad($id);
+            if (!$existeActividad) {
+                echo "No existe actividad con id $id\n";
+            }
+        } while (!$existeActividad);
 
         $actividad = ActividadControl::obtenerActividad($id);
         $descripcionCorta = $actividad->getDescripcionCorta();
         $descripcionLarga = $actividad->getDescripcionLarga();
 
-        echo "| Ingrese la descripción corta ($descripcionCorta)// Enter para saltar paso:  ";
+        echo $actividad->__toString();
+        echo "| Ingrese la descripción corta (Enter para saltar paso):  ";
         $input = trim(fgets(STDIN));
         if ($input !== "") $descripcionCorta = $input;
         
-        echo "| Ingrese la descripción larga ($descripcionLarga)// Enter para saltar paso:  ";
+        echo "| Ingrese la descripción larga (Enter para saltar paso):  ";
         $input = trim(fgets(STDIN));
         if ($input !== "") $descripcionLarga = $input;
 
         if (ActividadControl::modificarActividad($id, $descripcionCorta, $descripcionLarga)) {
-            echo "| Actividad creada correctamente.\n";
+            echo "| Actividad modificar correctamente.\n";
         } else {
-            echo "| Error al crear la actividad.\n";
+            echo "\n\n";
+            echo "+////////////////////////////////////+\n";
+            echo "// Error al modificar la actividad. //\n";
+            echo "+////////////////////////////////////+\n";
+            echo "Presione Enter para continuar...";
+            fgets(STDIN);
         }
         echo "+---------------------------------------\n";
     }
