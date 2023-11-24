@@ -35,7 +35,17 @@ CREATE TABLE ingresante (
 );
 CREATE TABLE inscripcion (
     id BIGINT AUTO_INCREMENT,
+    legajo VARCHAR(15) NOT NULL,
     fecha DATE,
     costo_final FLOAT,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (legajo) REFERENCES ingresante(legajo) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE modulo_ingresante (
+    id_modulo BIGINT,
+    id_inscripcion BIGINT,
+    PRIMARY KEY (id_modulo, id_inscripcion),
+    FOREIGN KEY (id_modulo) REFERENCES modulo(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (id_inscripcion) REFERENCES inscripcion(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
