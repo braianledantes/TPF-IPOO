@@ -21,7 +21,7 @@ CREATE TABLE modulo (
 CREATE TABLE modulo_en_linea (
     id BIGINT,
     link VARCHAR(200),
-    bonificacion FLOAT,
+    bonificacion FLOAT DEFAULT 20,
     PRIMARY KEY (id),
     FOREIGN KEY (id) REFERENCES modulo(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
