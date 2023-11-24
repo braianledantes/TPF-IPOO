@@ -5,7 +5,6 @@ require_once __DIR__ . "/ORM.php";
 class Modulo extends ORM
 {
     protected $id;
-    protected $idActividad;
     protected $descripcion;
     protected $topeInscripciones;
     protected $costo;
@@ -13,18 +12,26 @@ class Modulo extends ORM
     protected $horarioCierre;
     protected $inscripciones;
 
-    public function __construct(
+    public function __construct()
+    {
+        $this->id = 0;
+        $this->descripcion = "";
+        $this->topeInscripciones = 0;
+        $this->costo = 0.0;
+        $this->horarioInicio = "00:00";
+        $this->horarioCierre = "00:00";
+        $this->inscripciones = array();
+    }
+
+    public function cargar(
         $id,
-        $idActividad,
         $descripcion,
         $topeInscripciones,
         $costo,
         $horarioInicio,
         $horarioCierre
-    )
-    {
+    ) {
         $this->id = $id;
-        $this->idActividad = $idActividad;
         $this->descripcion = $descripcion;
         $this->topeInscripciones = $topeInscripciones;
         $this->costo = $costo;
