@@ -1,0 +1,41 @@
+CREATE DATABASE ingresante;
+USE ingresante;
+
+CREATE TABLE actividad (
+    id BIGINT AUTO_INCREMENT,
+    descripcion_corta VARCHAR(100),
+    descripcion_larga VARCHAR(500),
+    PRIMARY KEY (id)
+);
+CREATE TABLE modulo (
+    id BIGINT AUTO_INCREMENT,
+    descripcion VARCHAR(150),
+    tope_inscripciones INT DEFAULT 20,
+    costo FLOAT,
+    horario_inicio DATE,
+    horario_cierre DATE,
+    id_actividad BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_actividad) REFERENCES actividad(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE modulo_en_linea (
+    id BIGINT,
+    link VARCHAR(200),
+    bonificacion FLOAT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES modulo(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE ingresante (
+    legajo VARCHAR(15),
+    dni VARCHAR(15),
+    nombre VARCHAR(50),
+    apellido VARCHAR(50),
+    correo_electronico VARCHAR(150),
+    PRIMARY KEY legajo
+);
+CREATE TABLE inscripcion (
+    id BIGINT AUTO_INCREMENT,
+    fecha DATE,
+    costo_final FLOAT,
+    PRIMARY KEY (id)
+);
