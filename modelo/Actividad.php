@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__ . "/database.php";
+require_once __DIR__ . "/BaseDatos.php";
+require_once __DIR__ . "/ORM.php";
+require_once __DIR__ . "/Modulo.php";
 
 class Actividad extends ORM
 {
@@ -67,7 +69,7 @@ class Actividad extends ORM
     public function buscar($id)
     {
         $db = new BaseDatos();
-        $consulta = "SELECT * FROM actividad WHERE id = $id";
+        $consulta = "SELECT * FROM actividad WHERE id = '$id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -92,7 +94,7 @@ class Actividad extends ORM
     public function insertar()
     {
         $db = new BaseDatos();
-        $consulta = "INSERT INTO actividad (descripcion_corta, descripcion_larga) VALUES ($this->descripcionCorta, $this->descripcionLarga)";
+        $consulta = "INSERT INTO actividad (descripcion_corta, descripcion_larga) VALUES ('$this->descripcionCorta', '$this->descripcionLarga')";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -113,7 +115,7 @@ class Actividad extends ORM
     public function modificar()
     {
         $db = new BaseDatos();
-        $consulta = "UPDATE actividad SET descripcion_corta = $this->descripcionCorta, descripcion_larga = $this->descripcionLarga WHERE id = $this->id";
+        $consulta = "UPDATE actividad SET descripcion_corta = '$this->descripcionCorta', descripcion_larga = '$this->descripcionLarga' WHERE id = '$this->id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -131,7 +133,7 @@ class Actividad extends ORM
     public function eliminar()
     {
         $db = new BaseDatos();
-        $consulta = "DELETE FROM actividad WHERE id = $this->id";
+        $consulta = "DELETE FROM actividad WHERE id = '$this->id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
