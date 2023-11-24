@@ -12,8 +12,8 @@ CREATE TABLE modulo (
     descripcion VARCHAR(150),
     tope_inscripciones INT DEFAULT 20,
     costo FLOAT,
-    horario_inicio DATE,
-    horario_cierre DATE,
+    horario_inicio VARCHAR(5),
+    horario_cierre VARCHAR(5),
     id_actividad BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (id_actividad) REFERENCES actividad(id) ON UPDATE CASCADE ON DELETE CASCADE
