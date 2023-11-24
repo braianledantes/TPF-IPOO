@@ -5,6 +5,7 @@ require_once __DIR__ . "/ORM.php";
 class Modulo extends ORM
 {
     protected $id;
+    protected $idActividad;
     protected $descripcion;
     protected $topeInscripciones;
     protected $costo;
@@ -15,6 +16,7 @@ class Modulo extends ORM
     public function __construct()
     {
         $this->id = 0;
+        $this->idActividad = 0;
         $this->descripcion = "";
         $this->topeInscripciones = 0;
         $this->costo = 0.0;
@@ -25,6 +27,7 @@ class Modulo extends ORM
 
     public function cargar(
         $id,
+        $idActividad,
         $descripcion,
         $topeInscripciones,
         $costo,
@@ -32,6 +35,7 @@ class Modulo extends ORM
         $horarioCierre
     ) {
         $this->id = $id;
+        $this->idActividad = $idActividad;
         $this->descripcion = $descripcion;
         $this->topeInscripciones = $topeInscripciones;
         $this->costo = $costo;
@@ -48,6 +52,16 @@ class Modulo extends ORM
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    public function getIdActividad()
+    {
+        return $this->idActividad;
+    }
+
+    public function setIdActividad($idActividad)
+    {
+        $this->idActividad = $idActividad;
     }
 
     public function getDescripcion()
@@ -110,6 +124,21 @@ class Modulo extends ORM
         $this->inscripciones = $inscripciones;
     }
 
+    /*
+        $id,
+        $idActividad,
+        $descripcion,
+        $topeInscripciones,
+        $costo,
+        $horarioInicio,
+        $horarioCierre
+    */
+    public function __toString()
+    {
+        return 
+        "{\n id: $this->id,\n idActividad: $this->idActividad,\n descripcion: $this->descripcion,\n topeInscripciones: $this->topeInscripciones,\n costo: $this->costo,\n horarioInicio: $this->horarioInicio,\n horarioCierre: $this->horarioCierre\n}";
+    }
+
     public function buscar($id)
     {
         $db = new BaseDatos();
@@ -133,6 +162,7 @@ class Modulo extends ORM
 
         $this->cargar(
             $id,
+            $registro['id_actividad'],
             $registro['descripcion'],
             $registro['tope_inscripciones'],
             $registro['costo'],
@@ -145,8 +175,8 @@ class Modulo extends ORM
     public function insertar()
     {
         $db = new BaseDatos();
-        $consulta = "INSERT INTO modulo (descripcion, tope_inscripciones, costo, horario_inicio, horario_cierre) 
-                     VALUES ($this->descripcion, $this->topeInscripciones, $this->costo, $this->horarioInicio, $this->horarioCierre)";
+        $consulta = "INSERT INTO modulo (id_actividad, descripcion, tope_inscripciones, costo, horario_inicio, horario_cierre) 
+                     VALUES ('$this->idActividad','$this->descripcion', '$this->topeInscripciones', '$this->costo', '$this->horarioInicio', '$this->horarioCierre')";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -168,12 +198,13 @@ class Modulo extends ORM
     {
         $db = new BaseDatos();
         $consulta = "UPDATE modulo SET 
-                     descripcion = $this->descripcion, 
-                     tope_inscripciones = $this->topeInscripciones, 
-                     costo = $this->costo, 
-                     horario_inicio = $this->horarioInicio,
-                     horario_cierre = $this->horarioCierre 
-                     WHERE id = $this->id";
+                     id_actividad = '$this->idActividad', 
+                     descripcion = '$this->descripcion', 
+                     tope_inscripciones = '$this->topeInscripciones', 
+                     costo = '$this->costo', 
+                     horario_inicio = '$this->horarioInicio',
+                     horario_cierre = '$this->horarioCierre' 
+                     WHERE id = '$this->id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -191,7 +222,7 @@ class Modulo extends ORM
     public function eliminar()
     {
         $db = new BaseDatos();
-        $consulta = "DELETE FROM modulo WHERE id = $this->id";
+        $consulta = "DELETE FROM modulo WHERE id = '$this->id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -221,6 +252,7 @@ class Modulo extends ORM
             $modulo = new Modulo();
             $modulo->cargar(
                 $registro['id'],
+                $registro['id_actividad'],
                 $registro['descripcion'],
                 $registro['tope_inscripciones'],
                 $registro['costo'],
@@ -233,7 +265,8 @@ class Modulo extends ORM
         return $arrModulos;
     }
 
-    public static function listarInscripciones() {
+    public static function listarInscripciones()
+    {
         $db = new BaseDatos();
         $consulta = "SELECT inscripcion.*
                      FROM modulo_ingresante
