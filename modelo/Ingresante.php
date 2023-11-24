@@ -98,7 +98,13 @@ class Ingresante extends ORM
             return false;
         }
 
-        $this->cargar($legajo, $registro['dni'], $registro['nombre'], $registro['apellido'], $registro['correo_electronico']);
+        $this->cargar(
+            $legajo,
+            $registro['dni'],
+            $registro['nombre'],
+            $registro['apellido'],
+            $registro['correo_electronico']
+        );
         return true;
     }
 
@@ -106,7 +112,11 @@ class Ingresante extends ORM
     {
         $db = new BaseDatos();
         $consulta = "INSERT INTO ingresante (legajo, dni, nombre, apellido, correo_electronico) 
-                     VALUES ($this->legajo, $this->dni, $this->nombre, $this->apellido, $this->correoElectronico)";
+                     VALUES ($this->legajo,
+                             $this->dni,
+                             $this->nombre,
+                             $this->apellido,
+                             $this->correoElectronico)";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -127,7 +137,13 @@ class Ingresante extends ORM
     public function modificar()
     {
         $db = new BaseDatos();
-        $consulta = "UPDATE ingresante SET legajo = $this->legajo, dni = $this->dni, nombre = $this->nombre, apellido = $this->apellido, correo_electronico = $this->correoElectronico WHERE legajo = $this->legajo";
+        $consulta = "UPDATE ingresante SET 
+                     legajo = $this->legajo,
+                     dni = $this->dni,
+                     nombre = $this->nombre,
+                     apellido = $this->apellido,
+                     correo_electronico = $this->correoElectronico
+                     WHERE legajo = $this->legajo";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -173,7 +189,13 @@ class Ingresante extends ORM
 
         while ($registro = $db->Registro()) {
             $ingresante = new Ingresante();
-            $ingresante->cargar($registro['legajo'],$registro['dni'],$registro['nombre'], $registro['apellido'], $registro['correo_electronido']);
+            $ingresante->cargar(
+                $registro['legajo'],
+                $registro['dni'],
+                $registro['nombre'],
+                $registro['apellido'],
+                $registro['correo_electronido']
+            );
             array_push($arrIngresantes, $ingresante);
         }
 

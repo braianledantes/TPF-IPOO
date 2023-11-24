@@ -1,10 +1,12 @@
 <?php
 include_once "BaseDatos.php";
 
-class Inscripcion extends ORM {
+class Inscripcion extends ORM
+{
     private $id;
     private $fecha;
     private $costoFinal;
+    private $ingresante;
 
     public function __construct()
     {
@@ -13,11 +15,13 @@ class Inscripcion extends ORM {
         $this->costoFinal = 0.0;
     }
 
-    public function cargar($id, $fecha, $costoFinal)
+    public function cargar($id, $fecha, $costoFinal, $legajo)
     {
         $this->id = $id;
         $this->fecha = $fecha;
         $this->costoFinal = $costoFinal;
+        $this->ingresante = new Ingresante();
+        $this->ingresante->buscar($legajo);
     }
 
     public function getId()
@@ -50,6 +54,16 @@ class Inscripcion extends ORM {
         $this->costoFinal = $costoFinal;
     }
 
+    public function getIngresante()
+    {
+        return $this->ingresante;
+    }
+
+    public function setIngresante($ingresante)
+    {
+        $this->ingresante = $ingresante;
+    }
+
     public function __toString()
     {
         return "{ id: $this->id, fecha: $this->fecha, costoFinal: $this->costoFinal }";
@@ -79,7 +93,8 @@ class Inscripcion extends ORM {
         $this->cargar(
             $id,
             $registro['fecha'],
-            $registro['costo_final']
+            $registro['costo_final'],
+            $registro['legajo']
         );
         return true;
     }
@@ -162,7 +177,8 @@ class Inscripcion extends ORM {
             $inscripcion->cargar(
                 $registro['id'],
                 $registro['fecha'],
-                $registro['costo_final']
+                $registro['costo_final'],
+                $registro['legajo']
             );
             array_push($arrInscripciones, $inscripcion);
         }
