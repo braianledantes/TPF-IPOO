@@ -6,6 +6,7 @@ class BaseDatos {
     private $BASEDATOS;
     private $USUARIO;
     private $CLAVE;
+    private $PUERTO;
     private $CONEXION;
     private $QUERY;
     private $RESULT;
@@ -18,7 +19,8 @@ class BaseDatos {
         $this->HOSTNAME = "127.0.0.1";
         $this->BASEDATOS = "ingresante";
         $this->USUARIO = "root";
-        $this->CLAVE="";
+        $this->CLAVE="1234";
+        $this->PUERTO="3306";
         $this->RESULT=0;
         $this->QUERY="";
         $this->ERROR="";
@@ -42,7 +44,7 @@ class BaseDatos {
      */
     public  function Iniciar(){
         $resp  = false;
-        $conexion = mysqli_connect($this->HOSTNAME,$this->USUARIO,$this->CLAVE,$this->BASEDATOS);
+        $conexion = mysqli_connect($this->HOSTNAME,$this->USUARIO,$this->CLAVE,$this->BASEDATOS,$this->PUERTO);
         if ($conexion){
             if (mysqli_select_db($conexion,$this->BASEDATOS)){
                 $this->CONEXION = $conexion;
@@ -110,7 +112,7 @@ class BaseDatos {
         unset($this->ERROR);
         $this->QUERY = $consulta;
         if ($this->RESULT = mysqli_query($this->CONEXION,$consulta)){
-            $id = mysqli_insert_id();
+            $id = mysqli_insert_id($this->CONEXION);
             $resp =  $id;
         } else {
             $this->ERROR =mysqli_errno( $this->CONEXION) . ": " . mysqli_error( $this->CONEXION);
