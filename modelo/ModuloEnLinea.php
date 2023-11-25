@@ -14,8 +14,9 @@ class ModuloEnLinea extends Modulo
         $this->bonificacion = 0.0;
     }
 
-    public function cargar(
+    public function cargarr(
         $id,
+        $idActividad,
         $descripcion,
         $topeInscripciones,
         $costo,
@@ -24,7 +25,7 @@ class ModuloEnLinea extends Modulo
         $link,
         $bonificacion
     ) {
-        parent::cargar($id, $descripcion, $topeInscripciones, $costo, $horarioInicio, $horarioCierre);
+        parent::cargar($id, $idActividad, $descripcion, $topeInscripciones, $costo, $horarioInicio, $horarioCierre);
         $this->link = $link;
         $this->bonificacion = $bonificacion;
     }
@@ -49,13 +50,19 @@ class ModuloEnLinea extends Modulo
         $this->bonificacion = $bonificacion;
     }
 
+    public function __toString()
+    {
+        return 
+        "{\n id: $this->id,\n idActividad: $this->idActividad,\n descripcion: $this->descripcion,\n topeInscripciones: $this->topeInscripciones,\n costo: $this->costo,\n horarioInicio: $this->horarioInicio,\n horarioCierre: $this->horarioCierre,\n link: $this->link,\n bonificacion: $this->bonificacion\n}";
+    }
+
     public function buscar($id)
     {
         $db = new BaseDatos();
         $consulta = "SELECT m.*, ml.link, ml.bonificacion 
                      FROM modulo_en_linea AS ml 
                      INNER JOIN modulo AS m ON ml.id = m.id 
-                     WHERE id = $id";
+                     WHERE m.id = '$id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -73,8 +80,9 @@ class ModuloEnLinea extends Modulo
             return false;
         }
 
-        $this->cargar(
+        $this->cargarr(
             $id,
+            $registro['id_actividad'],
             $registro['descripcion'],
             $registro['tope_inscripciones'],
             $registro['costo'],
@@ -91,7 +99,7 @@ class ModuloEnLinea extends Modulo
         if (parent::insertar()) {
             $db = new BaseDatos();
             $consulta = "INSERT INTO modulo_en_linea (id, link, bonificacion) 
-                     VALUES ($this->id, $this->link, $this->bonificacion)";
+                     VALUES ('$this->id', '$this->link', '$this->bonificacion')";
 
             if (!$db->Iniciar()) {
                 $this->setMensajeOperacion($db->getError());
@@ -117,9 +125,9 @@ class ModuloEnLinea extends Modulo
         if (parent::modificar()) {
             $db = new BaseDatos();
             $consulta = "UPDATE modulo_en_linea SET 
-                         link = $this->link, 
-                         bonificacion = $this->bonificacion
-                         WHERE id = $this->id";
+                         link = '$this->link', 
+                         bonificacion = '$this->bonificacion'
+                         WHERE id = '$this->id'";
     
             if (!$db->Iniciar()) {
                 $this->setMensajeOperacion($db->getError());
@@ -149,7 +157,7 @@ class ModuloEnLinea extends Modulo
         $consulta = "SELECT m.*, ml.link, ml.bonificacion 
                      FROM modulo_en_linea AS ml 
                      INNER JOIN modulo AS m ON ml.id = m.id 
-                     ORDER BY id";
+                     ORDER BY m.id";
         $arrModulos = array();
 
         if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
@@ -158,14 +166,17 @@ class ModuloEnLinea extends Modulo
         }
 
         while ($registro = $db->Registro()) {
-            $modulo = new Modulo();
-            $modulo->cargar(
+            $modulo = new ModuloEnLinea();
+            $modulo->cargarr(
                 $registro['id'],
+                $registro['id_actividad'],
                 $registro['descripcion'],
                 $registro['tope_inscripciones'],
                 $registro['costo'],
                 $registro['horario_inicio'],
-                $registro['horario_cierre']
+                $registro['horario_cierre'],
+                $registro['link'],
+                $registro['bonificacion']
             );
             array_push($arrModulos, $modulo);
         }

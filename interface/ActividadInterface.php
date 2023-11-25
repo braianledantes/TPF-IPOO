@@ -6,14 +6,14 @@ class ActividadInterface
     public function menuActividad()
     {
         do {
-            echo "+- MENÚ DE ACTIVIDADES ---------+\n";
-            echo "| 1. Ingresar un actividad      |\n";
-            echo "| 2. Modificar un actividad     |\n";
-            echo "| 3. Eliminar un actividad      |\n";
-            echo "| 4. Listar todos los actividad |\n";
-            echo "| 0. Salir                      |\n";
-            echo "| Ingrese una opción:           |\n";
-            echo "+-------------------------------+\n";
+            echo "+- MENÚ DE ACTIVIDADES -----------+\n";
+            echo "| 1. Ingresar                     |\n";
+            echo "| 2. Modificar                    |\n";
+            echo "| 3. Eliminar                     |\n";
+            echo "| 4. Listar todo                  |\n";
+            echo "| 0. Salir                        |\n";
+            echo "| Ingrese una opción:             |\n";
+            echo "+---------------------------------+\n";
             $opcion = intval(trim(fgets(STDIN)));
 
             switch ($opcion) {
@@ -136,7 +136,3 @@ class ActividadInterface
         echo "+---------------------------------------\n";
     }
 }
-
-
-$interface = new ActividadInterface();
-$interface->menuActividad();

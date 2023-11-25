@@ -124,15 +124,6 @@ class Modulo extends ORM
         $this->inscripciones = $inscripciones;
     }
 
-    /*
-        $id,
-        $idActividad,
-        $descripcion,
-        $topeInscripciones,
-        $costo,
-        $horarioInicio,
-        $horarioCierre
-    */
     public function __toString()
     {
         return 

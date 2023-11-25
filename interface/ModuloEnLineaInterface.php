@@ -1,13 +1,13 @@
 <?php
-include_once __DIR__ . '/../control/ModuloControl.php';
+include_once __DIR__ . '/../control/ModuloEnLineaControl.php';
 include_once __DIR__ . '/../control/ActividadControl.php';
 
-class ModuloInterface
+class ModuloEnLineaInterface
 {
-    public function menuModulo()
+    public function menuModuloEnLinea()
     {
         do {
-            echo "+- MENÚ DE MÓDULOS ---------------+\n";
+            echo "+- MENÚ DE MÓDULOS EN LINEA ------+\n";
             echo "| 1. Ingresar                     |\n";
             echo "| 2. Modificar                    |\n";
             echo "| 3. Eliminar                     |\n";
@@ -19,16 +19,16 @@ class ModuloInterface
 
             switch ($opcion) {
                 case 1:
-                    $this->crearModulo();
+                    $this->crearModuloEnLinea();
                     break;
                 case 2:
-                    $this->modificarModulo();
+                    $this->modificarModuloEnLinea();
                     break;
                 case 3:
-                    $this->eliminarModulo();
+                    $this->eliminarModuloEnLinea();
                     break;
                 case 4:
-                    $this->listarModulos();
+                    $this->listarModulosEnLinea();
                     break;
                 case 0:
                     echo "Saliendo...\n";
@@ -40,9 +40,9 @@ class ModuloInterface
         } while ($opcion != 0);
     }
 
-    private function crearModulo()
+    private function crearModuloEnLinea()
     {
-        echo "+- Crear Módulo ---------------------\n";
+        echo "+- Crear Módulo En Linea ---------------------\n";
 
         do {
             echo "| Ingrese el id de la actividad que pertenece: ";
@@ -63,59 +63,67 @@ class ModuloInterface
         $horarioInicio = trim(fgets(STDIN));
         echo "| Ingrese el horario de cierre (ej: 18:00): ";
         $horarioCierre = trim(fgets(STDIN));
+        echo "| Ingrese link: ";
+        $link = trim(fgets(STDIN));
+        echo "| Ingrese la bonificación: ";
+        $bonificacion = trim(fgets(STDIN));
 
-        if (ModuloControl::crearModulo(
+        if (ModuloEnLineaControl::crearModuloEnLinea(
             $idActividad,
             $descripcion,
             $topeInscripciones,
             $costo,
             $horarioInicio,
-            $horarioCierre
+            $horarioCierre,
+            $link,
+            $bonificacion
         )) {
-            echo "| Módulo creado correctamente.\n";
+            echo "| Módulo En Linea creado correctamente.\n";
         } else {
             echo "\n\n";
-            echo "+/////////////////////////////+\n";
-            echo "// Error al crear la módulo. //\n";
-            echo "+/////////////////////////////+\n";
+            echo "+//////////////////////////////////////+\n";
+            echo "// Error al crear la módulo en linea. //\n";
+            echo "+//////////////////////////////////////+\n";
             echo "Presione Enter para continuar...";
             fgets(STDIN);
         }
         echo "+---------------------------------------\n";
     }
 
-    private function eliminarModulo()
+    private function eliminarModuloEnLinea()
     {
-        echo "+- Eliminar Módulo ------------------\n";
+        echo "+- Eliminar Módulo En Linea ------------------\n";
         echo "| Ingrese la identificación de la módulo: ";
         $id = trim(fgets(STDIN));
 
-        if (ModuloControl::eliminarModulo($id)) {
+        if (ModuloEnLineaControl::eliminarModuloEnLinea($id)) {
             echo "| Módulo $id eliminada correctamente.\n";
         } else {
             echo "\n\n";
-            echo "+/////////////////////////////////+\n";
-            echo "// Error al eliminar módulo $id. //\n";
-            echo "+/////////////////////////////////+\n";
+            echo "+//////////////////////////////////////////+\n";
+            echo "// Error al eliminar módulo en linea $id. //\n";
+            echo "+//////////////////////////////////////////+\n";
             echo "Presione Enter para continuar...";
             fgets(STDIN);
         }
         echo "+---------------------------------------\n";
     }
 
-    private function modificarModulo()
+    private function modificarModuloEnLinea()
     {
-        echo "+- Modificar Módulo -----------------\n";
-        echo "| Ingrese la identificación de la módulo: ";
+        echo "+- Modificar Módulo En Linea -----------------\n";
+        echo "| Ingrese la identificación del módulo: ";
         $id = trim(fgets(STDIN));
 
-        $modulo = ModuloControl::obtenerModulo($id);
+        $modulo = ModuloEnLineaControl::obtenerModuloEnLinea($id);
         $idActividad = $modulo->getIdActividad();
         $descripcion = $modulo->getDescripcion();
         $topeInscripciones = $modulo->getTopeInscripciones();
         $costo = $modulo->getCosto();
         $horarioInicio = $modulo->getHorarioInicio();
         $horarioCierre = $modulo->getHorarioCierre();
+        $link = $modulo->getLink();
+        $bonificacion = $modulo->getBonificacion();
 
         echo $modulo->__toString();
 
@@ -143,14 +151,16 @@ class ModuloInterface
         $input = trim(fgets(STDIN));
         if ($input !== "") $horarioCierre = $input;
 
-        if (ModuloControl::modificarModulo(
+        if (ModuloEnLineaControl::modificarModuloEnLinea(
             $id,
             $idActividad,
             $descripcion,
             $topeInscripciones,
             $costo,
             $horarioInicio,
-            $horarioCierre
+            $horarioCierre,
+            $link,
+            $bonificacion
         )) {
             echo "| Módulo modificado correctamente.\n";
         } else {
@@ -164,13 +174,13 @@ class ModuloInterface
         echo "+---------------------------------------\n";
     }
 
-    private function listarModulos()
+    private function listarModulosEnLinea()
     {
         echo "+- Listar Módulos ------------------\n";
 
-        $moduloes = ModuloControl::listarModuloes();
+        $moduloes = ModuloEnLineaControl::listarModuloEnLineas();
         if (empty($moduloes)) {
-            echo "| No hay modulos registrados.\n";
+            echo "| No hay modulos en linea registrados.\n";
         } else {
             foreach ($moduloes as $modulo) {
                 echo $modulo->__toString();

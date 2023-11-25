@@ -12,17 +12,17 @@ class ModuloControl
         $horarioCierre
     ) {
         $resp = false;
-        $moduloNueva = new Modulo();
-        $moduloNueva->cargar(
-            0,
-            $idActividad,
-            $descripcion,
-            $topeInscripciones,
-            $costo,
-            $horarioInicio,
-            $horarioCierre
-        );
         try {
+            $moduloNueva = new Modulo();
+            $moduloNueva->cargar(
+                0,
+                $idActividad,
+                $descripcion,
+                $topeInscripciones,
+                $costo,
+                $horarioInicio,
+                $horarioCierre
+            );
             $resp = $moduloNueva->insertar();
         } catch (Exception $e) {
         }
