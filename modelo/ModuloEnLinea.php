@@ -50,6 +50,10 @@ class ModuloEnLinea extends Modulo
         $this->bonificacion = $bonificacion;
     }
 
+    public function darCostoMódulo() {
+        return $this->costo * (1 - ($this->bonificacion / 100));
+    }
+
     public function __toString()
     {
         return 
@@ -106,14 +110,8 @@ class ModuloEnLinea extends Modulo
                 return false;
             }
 
-            $id = $db->devuelveIDInsercion($consulta);
-
-            if (!$id) {
-                $this->setMensajeOperacion($db->getError());
-                return false;
-            }
-
-            $this->setId($id);
+            $db->devuelveIDInsercion($consulta);
+            // no setea el id devuelto porque la hace la funcion del padre
             return true;
         } else {
             return false;

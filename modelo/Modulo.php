@@ -124,6 +124,10 @@ class Modulo extends ORM
         $this->inscripciones = $inscripciones;
     }
 
+    public function darCostoMódulo() {
+        return $this->costo;
+    }
+
     public function __toString()
     {
         return 
