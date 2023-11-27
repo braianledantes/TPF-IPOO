@@ -65,8 +65,10 @@ class ModuloEnLineaInterface
         $horarioCierre = trim(fgets(STDIN));
         echo "| Ingrese link: ";
         $link = trim(fgets(STDIN));
-        echo "| Ingrese la bonificación: ";
-        $bonificacion = trim(fgets(STDIN));
+        echo "| Ingrese la bonificacion (20% por defecto):  ";
+        $input = trim(fgets(STDIN));
+        if ($input !== "") $bonificacion = $input;
+        else $bonificacion = 20;
 
         if (ModuloEnLineaControl::crearModuloEnLinea(
             $idActividad,
@@ -150,6 +152,14 @@ class ModuloEnLineaInterface
         echo "| Ingrese el horario de cierre (Enter para saltar paso):  ";
         $input = trim(fgets(STDIN));
         if ($input !== "") $horarioCierre = $input;
+
+        echo "| Ingrese el link (Enter para saltar paso):  ";
+        $input = trim(fgets(STDIN));
+        if ($input !== "") $link = $input;
+
+        echo "| Ingrese la bonificacion (Enter para saltar paso):  ";
+        $input = trim(fgets(STDIN));
+        if ($input !== "") $bonificacion = $input;
 
         if (ModuloEnLineaControl::modificarModuloEnLinea(
             $id,
