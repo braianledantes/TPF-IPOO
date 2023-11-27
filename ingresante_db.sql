@@ -27,11 +27,11 @@ CREATE TABLE modulo_en_linea (
 );
 CREATE TABLE ingresante (
     legajo VARCHAR(15),
-    dni VARCHAR(15),
+    dni VARCHAR(15) UNIQUE,
     nombre VARCHAR(50),
     apellido VARCHAR(50),
     correo_electronico VARCHAR(150),
-    PRIMARY KEY legajo
+    PRIMARY KEY (legajo)
 );
 CREATE TABLE inscripcion (
     id BIGINT AUTO_INCREMENT,
