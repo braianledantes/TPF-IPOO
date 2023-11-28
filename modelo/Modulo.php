@@ -124,7 +124,7 @@ class Modulo extends ORM
         $this->inscripciones = $inscripciones;
     }
 
-    public function darCostoMódulo() {
+    public function darCostoModulo() {
         return $this->costo;
     }
 
@@ -264,7 +264,7 @@ class Modulo extends ORM
     {
         $db = new BaseDatos();
         $consulta = "SELECT inscripcion.*
-                     FROM modulo_ingresante
+                     FROM modulo_inscripcion
                      INNER JOIN inscripcion ON id_inscripcion = inscripcion.id";
         $arrInscripciones = array();
 
@@ -278,8 +278,7 @@ class Modulo extends ORM
             $inscripcion->cargar(
                 $registro['id'],
                 $registro['fecha'],
-                $registro['costo_final'],
-                $registro['legajo']
+                $registro['costo_final']
             );
             array_push($arrInscripciones, $inscripcion);
         }

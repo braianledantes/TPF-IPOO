@@ -50,7 +50,7 @@ class ModuloEnLinea extends Modulo
         $this->bonificacion = $bonificacion;
     }
 
-    public function darCostoMódulo() {
+    public function darCostoModulo() {
         return $this->costo * (1 - ($this->bonificacion / 100));
     }
 

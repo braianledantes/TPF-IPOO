@@ -9,6 +9,7 @@ class Ingresante extends ORM
     private $nombre;
     private $apellido;
     private $correoElectronico;
+    private $inscripcion;
 
     public function __construct()
     {
@@ -17,15 +18,17 @@ class Ingresante extends ORM
         $this->nombre = "";
         $this->apellido = "";
         $this->correoElectronico = "";
+        $this->inscripcion = new Inscripcion();
     }
 
-    public function cargar($legajo, $dni, $nombre, $apellido, $correoElectronico)
+    public function cargar($legajo, $dni, $nombre, $apellido, $correoElectronico, $idInscripcion)
     {
         $this->legajo = $legajo;
         $this->dni = $dni;
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->correoElectronico = $correoElectronico;
+        $this->inscripcion->buscar($idInscripcion);
     }
 
     public function getLegajo()
@@ -81,7 +84,7 @@ class Ingresante extends ORM
     public function buscar($legajo)
     {
         $db = new BaseDatos();
-        $consulta = "SELECT * FROM ingresante WHERE legajo = $legajo";
+        $consulta = "SELECT * FROM ingresante WHERE legajo = '$legajo'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -104,7 +107,8 @@ class Ingresante extends ORM
             $registro['dni'],
             $registro['nombre'],
             $registro['apellido'],
-            $registro['correo_electronico']
+            $registro['correo_electronico'],
+            $registro['id_inscripcion']
         );
         return true;
     }
@@ -112,12 +116,14 @@ class Ingresante extends ORM
     public function insertar()
     {
         $db = new BaseDatos();
-        $consulta = "INSERT INTO ingresante (legajo, dni, nombre, apellido, correo_electronico) 
-                     VALUES ($this->legajo,
-                             $this->dni,
-                             $this->nombre,
-                             $this->apellido,
-                             $this->correoElectronico)";
+        $idInscripcion = $this->inscripcion->getId();
+        $consulta = "INSERT INTO ingresante (legajo, dni, nombre, apellido, correo_electronico, id_inscripcion) 
+                     VALUES ('$this->legajo',
+                             '$this->dni',
+                             '$this->nombre',
+                             '$this->apellido',
+                             '$this->correoElectronico',
+                             '$idInscripcion')";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -137,14 +143,16 @@ class Ingresante extends ORM
 
     public function modificar()
     {
+        $idInsgresante = $this->inscripcion->getId();
         $db = new BaseDatos();
         $consulta = "UPDATE ingresante SET 
-                     legajo = $this->legajo,
-                     dni = $this->dni,
-                     nombre = $this->nombre,
-                     apellido = $this->apellido,
-                     correo_electronico = $this->correoElectronico
-                     WHERE legajo = $this->legajo";
+                     legajo = '$this->legajo',
+                     dni = '$this->dni',
+                     nombre = '$this->nombre',
+                     apellido = '$this->apellido',
+                     correo_electronico = '$this->correoElectronico',
+                     id_inscripcion = '$idInsgresante',
+                     WHERE legajo = '$this->legajo'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -162,7 +170,7 @@ class Ingresante extends ORM
     public function eliminar()
     {
         $db = new BaseDatos();
-        $consulta = "DELETE FROM ingresante WHERE legajo = $this->legajo";
+        $consulta = "DELETE FROM ingresante WHERE legajo = '$this->legajo'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -195,7 +203,8 @@ class Ingresante extends ORM
                 $registro['dni'],
                 $registro['nombre'],
                 $registro['apellido'],
-                $registro['correo_electronido']
+                $registro['correo_electronido'],
+                $registro['id_inscripcion']
             );
             array_push($arrIngresantes, $ingresante);
         }
@@ -205,6 +214,6 @@ class Ingresante extends ORM
 
     public function __toString()
     {
-        return "{ legajo: $this->legajo, dni: $this->dni, nombre: $this->nombre, apellido: $this->apellido, correoElectronico: $this->correoElectronico }";
+        return "{ legajo: $this->legajo, dni: $this->dni, nombre: $this->nombre, apellido: $this->apellido, correoElectronico: $this->correoElectronico, inscripcion: $this->inscripcion }";
     }
 }

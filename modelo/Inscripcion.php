@@ -7,7 +7,6 @@ class Inscripcion extends ORM
     private $id;
     private $fecha;
     private $costoFinal;
-    private $ingresante;
     private $modulos;
 
     public function __construct()
@@ -15,16 +14,14 @@ class Inscripcion extends ORM
         $this->id = 0;
         $this->fecha = "";
         $this->costoFinal = 0.0;
-        $this->ingresante = new Ingresante();
         $this->modulos = array();
     }
 
-    public function cargar($id, $fecha, $costoFinal, $legajo)
+    public function cargar($id, $fecha, $costoFinal)
     {
         $this->id = $id;
         $this->fecha = $fecha;
         $this->costoFinal = $costoFinal;
-        $this->ingresante->buscar($legajo);
     }
 
     public function getId()
@@ -57,16 +54,6 @@ class Inscripcion extends ORM
         $this->costoFinal = $costoFinal;
     }
 
-    public function getIngresante()
-    {
-        return $this->ingresante;
-    }
-
-    public function setIngresante($ingresante)
-    {
-        $this->ingresante = $ingresante;
-    }
-
     public function getModulos()
     {
         return $this->modulos;
@@ -85,7 +72,7 @@ class Inscripcion extends ORM
     public function buscar($id)
     {
         $db = new BaseDatos();
-        $consulta = "SELECT * FROM inscripcion WHERE id = $id";
+        $consulta = "SELECT * FROM inscripcion WHERE id = '$id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -106,8 +93,7 @@ class Inscripcion extends ORM
         $this->cargar(
             $id,
             $registro['fecha'],
-            $registro['costo_final'],
-            $registro['legajo']
+            $registro['costo_final']
         );
         return true;
     }
@@ -116,7 +102,7 @@ class Inscripcion extends ORM
     {
         $db = new BaseDatos();
         $consulta = "INSERT INTO inscripcion (fecha, costo_final) 
-                     VALUES ($this->fecha, $this->costoFinal)";
+                     VALUES ('$this->fecha', '$this->costoFinal')";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -137,11 +123,11 @@ class Inscripcion extends ORM
     public function modificar()
     {
         $db = new BaseDatos();
-        $consulta = "UPDATE ingresante SET 
-                     id = $this->id, 
-                     fecha = $this->fecha, 
-                     costo_final = $this->costoFinal
-                     WHERE id = $this->id";
+        $consulta = "UPDATE inscripcion SET 
+                     id = '$this->id', 
+                     fecha = '$this->fecha', 
+                     costo_final = '$this->costoFinal'
+                     WHERE id = '$this->id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -159,7 +145,7 @@ class Inscripcion extends ORM
     public function eliminar()
     {
         $db = new BaseDatos();
-        $consulta = "DELETE FROM ingresante WHERE id = $this->id";
+        $consulta = "DELETE FROM inscripcion WHERE id = '$this->id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());
@@ -177,7 +163,7 @@ class Inscripcion extends ORM
     public static function listar()
     {
         $db = new BaseDatos();
-        $consulta = "SELECT * FROM ingresante ORDER BY id";
+        $consulta = "SELECT * FROM inscripcion ORDER BY id";
         $arrInscripciones = array();
 
         if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
@@ -190,12 +176,33 @@ class Inscripcion extends ORM
             $inscripcion->cargar(
                 $registro['id'],
                 $registro['fecha'],
-                $registro['costo_final'],
-                $registro['legajo']
+                $registro['costo_final']
             );
             array_push($arrInscripciones, $inscripcion);
         }
 
         return $arrInscripciones;
+    }
+
+    public function inscribirAModulos($arrModulos)
+    {
+        $db = new BaseDatos();
+        $consulta = "INSERT INTO modulo_inscripcion (id_modulo, id_inscripcion) VALUES ";
+        foreach ($arrModulos as $modulo) {
+            $idModulo = $modulo->getId();
+            $consulta .= "('$idModulo', '$this->id'),";
+        }
+        $consulta = rtrim($consulta, ',');
+        if (!$db->Iniciar()) {
+            $this->setMensajeOperacion($db->getError());
+            return false;
+        }
+
+        if (!$db->Ejecutar($consulta)) {
+            $this->setMensajeOperacion($db->getError());
+            return false;
+        }
+
+        return true;
     }
 }

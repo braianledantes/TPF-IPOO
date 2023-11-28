@@ -1,6 +1,5 @@
 CREATE DATABASE ingresante;
 USE ingresante;
-
 CREATE TABLE actividad (
     id BIGINT AUTO_INCREMENT,
     descripcion_corta VARCHAR(100),
@@ -25,24 +24,23 @@ CREATE TABLE modulo_en_linea (
     PRIMARY KEY (id),
     FOREIGN KEY (id) REFERENCES modulo(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+CREATE TABLE inscripcion (
+    id BIGINT AUTO_INCREMENT,
+    fecha DATE,
+    costo_final FLOAT,
+    PRIMARY KEY (id)
+);
 CREATE TABLE ingresante (
     legajo VARCHAR(15),
+    id_inscripcion BIGINT,
     dni VARCHAR(15) UNIQUE,
     nombre VARCHAR(50),
     apellido VARCHAR(50),
     correo_electronico VARCHAR(150),
-    PRIMARY KEY (legajo)
+    PRIMARY KEY (legajo),
+    FOREIGN KEY (id_inscripcion) REFERENCES inscripcion(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE TABLE inscripcion (
-    id BIGINT AUTO_INCREMENT,
-    legajo VARCHAR(15) NOT NULL,
-    fecha DATE,
-    costo_final FLOAT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (legajo) REFERENCES ingresante(legajo) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE modulo_ingresante (
+CREATE TABLE modulo_inscripcion (
     id_modulo BIGINT,
     id_inscripcion BIGINT,
     PRIMARY KEY (id_modulo, id_inscripcion),
