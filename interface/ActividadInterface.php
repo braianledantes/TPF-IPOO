@@ -105,11 +105,11 @@ class ActividadInterface
         $descripcionCorta = $actividad->getDescripcionCorta();
         $descripcionLarga = $actividad->getDescripcionLarga();
 
-        echo $actividad->__toString();
+        echo $actividad->__toString() . "\n";
         echo "| Ingrese la descripción corta (Enter para saltar paso):  ";
         $input = trim(fgets(STDIN));
         if ($input !== "") $descripcionCorta = $input;
-        
+
         echo "| Ingrese la descripción larga (Enter para saltar paso):  ";
         $input = trim(fgets(STDIN));
         if ($input !== "") $descripcionLarga = $input;
