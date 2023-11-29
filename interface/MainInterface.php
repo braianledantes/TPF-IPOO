@@ -180,6 +180,3 @@ class MainInterface
         system('clear');
     }
 }
-
-$MainInterface = new MainInterface();
-$MainInterface->menuPrincipal();
