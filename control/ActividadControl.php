@@ -48,4 +48,10 @@ class ActividadControl
     {
         return Actividad::listar();
     }
+
+    public static function listarActividadesDeIngresante($legajo)
+    {
+        return Actividad::listarActividadesDeIngresante($legajo);
+    }
+    
 }

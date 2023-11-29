@@ -145,25 +145,50 @@ class InscripcionInterface
         } while (!$existeInscripcion);
 
         $inscripcion = InscripcionControl::obtenerInscripcion($id);
-        $fecha = $inscripcion->getFecha();
-        $costoFinal = $inscripcion->getCostoFinal();
-        $ingresante = $inscripcion->getIngresante();
-        $modulosInscripcion = array();
-
-        $modulos = ModuloControl::listarModuloes();
-
-
         echo $inscripcion->__toString();
-        echo "| Ingrese la descripción corta (Enter para saltar paso):  ";
-        $input = trim(fgets(STDIN));
-        if ($input !== "") $descripcionCorta = $input;
 
-        echo "| Ingrese la descripción larga (Enter para saltar paso):  ";
-        $input = trim(fgets(STDIN));
-        if ($input !== "") $descripcionLarga = $input;
+        $fecha = $inscripcion->getFecha();
+        $modulosInscripcion = $inscripcion->getModulos();
 
-        /*
-        if (InscripcionControl::modificarInscripcion($id, $descripcionCorta, $descripcionLarga)) {
+        echo "Modulos inscriptos:\n";
+        foreach ($modulosInscripcion as $modulo) {
+            echo $modulo->__toString() . "\n";
+        }
+
+        echo "| Ingrese la fecha de inscripción (AAAA-MM-DD) (Enter para saltar paso):  ";
+        $input = trim(fgets(STDIN));
+        if ($input !== "") $fecha = $input;
+
+        // solicita los modulos al usuario
+        $arrModulos = array();
+        $this->mostrarListadoModulos();
+        do {
+            echo "| Ingrese el id del modulo a inscribir (Enter para salir): ";
+            $idModulo = trim(fgets(STDIN));
+            $modulo = null;
+            if ($idModulo != "") {
+                try {
+                    $modulo = ModuloEnLineaControl::obtenerModuloEnLinea($idModulo);
+                } catch (\Throwable $th) {
+                    try {
+                        $modulo = ModuloControl::obtenerModulo($idModulo);
+                    } catch (\Throwable $th) {
+                        echo "No existe modulo con id = $idModulo\n";
+                    }
+                } finally {
+                    if ($modulo != null) {
+                        array_push($arrModulos, $modulo);
+                        echo "Modulo $idModulo agregado\n";
+                    }
+                }
+            }
+        } while ($idModulo != "");
+
+        if (InscripcionControl::modificarInscripcion(
+            $id,
+            $fecha,
+            $arrModulos
+        )) {
             echo "| Actividad modificar correctamente.\n";
         } else {
             echo "\n\n";
@@ -174,7 +199,6 @@ class InscripcionInterface
             fgets(STDIN);
         }
         echo "+---------------------------------------\n";
-        */
     }
 
     private function listarInscripciones()
@@ -201,4 +225,6 @@ class InscripcionInterface
             echo $modulo->__toString() . "\n";
         }
     }
+
+    
 }

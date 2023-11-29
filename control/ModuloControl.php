@@ -39,6 +39,13 @@ class ModuloControl
         return $modulo;
     }
 
+    public static function existeModulo($id)
+    {
+        $modulo = new Modulo();
+        $resp = $modulo->buscar($id);
+        return $resp;
+    }
+
     public static function eliminarModulo($id)
     {
         $modulo = new Modulo();

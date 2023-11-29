@@ -139,7 +139,11 @@ class Inscripcion extends ORM
             return false;
         }
 
-        return true;
+        if (!$this->eliminarModulos($db)) {
+            return false;
+        }
+
+        return $this->inscribirAModulos($db);
     }
 
     public function eliminar()
@@ -184,19 +188,80 @@ class Inscripcion extends ORM
         return $arrInscripciones;
     }
 
-    public function inscribirAModulos($arrModulos)
+    public static function listarInscripcionesDeModulo($idModulo)
     {
         $db = new BaseDatos();
-        $consulta = "INSERT INTO modulo_inscripcion (id_modulo, id_inscripcion) VALUES ";
-        foreach ($arrModulos as $modulo) {
-            $idModulo = $modulo->getId();
-            $consulta .= "('$idModulo', '$this->id'),";
+        $consulta = "SELECT inscripcion.* FROM inscripcion
+                     INNER JOIN modulo_inscripcion ON id = id_inscripcion
+                     WHERE id_modulo = '$idModulo'";
+        $arrInscripciones = array();
+
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
+            // $this->setMensajeOperacion($db->getError());
+            return $arrInscripciones;
         }
-        $consulta = rtrim($consulta, ',');
-        if (!$db->Iniciar()) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
+
+        while ($registro = $db->Registro()) {
+            $inscripcion = new Inscripcion();
+            $inscripcion->cargar(
+                $registro['id'],
+                $registro['fecha'],
+                $registro['costo_final']
+            );
+            array_push($arrInscripciones, $inscripcion);
         }
+
+        return $arrInscripciones;
+    }
+
+    public static function listarInscripcionesDeActividad($idActividad)
+    {
+        $db = new BaseDatos();
+        $consulta = "SELECT i.* FROM inscripcion AS i
+                     INNER JOIN modulo_inscripcion AS mi ON i.id = mi.id_inscripcion
+                     INNER JOIN modulo AS m ON m.id = mi.id_modulo
+                     WHERE m.id_actividad = '$idActividad";
+        $arrInscripciones = array();
+
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
+            // $this->setMensajeOperacion($db->getError());
+            return $arrInscripciones;
+        }
+
+        while ($registro = $db->Registro()) {
+            $inscripcion = new Inscripcion();
+            $inscripcion->cargar(
+                $registro['id'],
+                $registro['fecha'],
+                $registro['costo_final']
+            );
+            array_push($arrInscripciones, $inscripcion);
+        }
+
+        return $arrInscripciones;
+    }
+
+    private function inscribirAModulos($db)
+    {
+        if ($this->modulos) {
+            $consulta = "INSERT INTO modulo_inscripcion (id_modulo, id_inscripcion) VALUES ";
+            foreach ($this->modulos as $modulo) {
+                $idModulo = $modulo->getId();
+                $consulta .= "('$idModulo', '$this->id'),";
+            }
+            $consulta = rtrim($consulta, ',');
+
+            if (!$db->Ejecutar($consulta)) {
+                $this->setMensajeOperacion($db->getError());
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function eliminarModulos($db)
+    {
+        $consulta = "DELETE FROM modulo_inscripcion WHERE id = '$this->id'";
 
         if (!$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());

@@ -137,7 +137,7 @@ class Modulo extends ORM
     public function buscar($id)
     {
         $db = new BaseDatos();
-        $consulta = "SELECT * FROM modulo WHERE id = $id";
+        $consulta = "SELECT * FROM modulo WHERE id = '$id'";
 
         if (!$db->Iniciar()) {
             $this->setMensajeOperacion($db->getError());

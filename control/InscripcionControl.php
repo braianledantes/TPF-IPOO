@@ -23,7 +23,8 @@ class InscripcionControl
         
         // crea la inscripcion
         $inscripcion = new Inscripcion();
-        $inscripcion->cargar(0, $fecha, $costoFinal, $legajo);
+        $inscripcion->cargar(0, $fecha, $costoFinal);
+        $inscripcion->setModulos($arrModulos);
         $inscripcion->insertar();
 
         // crea un nuevo ingresante
@@ -39,7 +40,6 @@ class InscripcionControl
         );    
         
         $ingresante->insertar();
-        $inscripcion->inscribirAModulos($arrModulos);
 
         return true;
     }
@@ -61,24 +61,43 @@ class InscripcionControl
         return $inscripcion;
     }
 
-    public static function eliminarInscripcion($legajo)
+    public static function eliminarInscripcion($id)
     {
         $inscripcion = new Inscripcion();
-        $inscripcion->cargar($legajo, "", "", "", "");
+        $inscripcion->cargar($id, "", "");
         $resp = $inscripcion->eliminar();
         return $resp;
     }
 
-    public static function modificarInscripcion($id, $fecha, $costoFinal, $legajo)
-    {
+    public static function modificarInscripcion($id, $fecha, $arrModulos) {
+        // si no hay modolos a los que inscribirse no hace nada
+        if (!$arrModulos) return false;
+        
+        // calcula el costo final
+        $costoFinal = 0;
+        foreach ($arrModulos as $modulo) {
+            $costoFinal += $modulo->darCostoModulo();
+        }
+        
+        // modifica la inscripcion y la relacion
         $inscripcion = new Inscripcion();
-        $inscripcion->cargar($id, $fecha, $costoFinal, $legajo);
-        $resp = $inscripcion->modificar();
-        return $resp;
+        $inscripcion->cargar($id, $fecha, $costoFinal);
+        $inscripcion->setModulos($arrModulos);
+        return $inscripcion->modificar();
     }
 
     public static function listarInscripciones()
     {
         return Inscripcion::listar();
+    }
+
+    public static function listarInscripcionesDeModulo($idModulo)
+    {
+        return Inscripcion::listarInscripcionesDeModulo($idModulo);
+    }
+
+    public static function listarInscripcionesDeActividad($idActividad)
+    {
+        return Inscripcion::listarInscripcionesDeActividad($idActividad);
     }
 }
