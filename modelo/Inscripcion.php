@@ -117,7 +117,7 @@ class Inscripcion extends ORM
         }
 
         $this->setId($id);
-        return true;
+        return $this->inscribirAModulos($db);
     }
 
     public function modificar()
@@ -220,7 +220,7 @@ class Inscripcion extends ORM
         $consulta = "SELECT i.* FROM inscripcion AS i
                      INNER JOIN modulo_inscripcion AS mi ON i.id = mi.id_inscripcion
                      INNER JOIN modulo AS m ON m.id = mi.id_modulo
-                     WHERE m.id_actividad = '$idActividad";
+                     WHERE m.id_actividad = '$idActividad'";
         $arrInscripciones = array();
 
         if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
