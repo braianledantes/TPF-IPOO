@@ -9,6 +9,7 @@ class InscripcionInterface
     public function menuInscripcion()
     {
         do {
+            system('clear');
             echo "+- MENÚ DE INSCRIPCIONES -----------+\n";
             echo "| 1. Ingresar                     |\n";
             echo "| 2. Modificar                    |\n";
@@ -44,7 +45,8 @@ class InscripcionInterface
 
     private function crearInscripcion()
     {
-        echo "+- Crear Inscripción ---------------------\n";
+        system('clear');
+        echo "+- Crear Inscripción --------------------------\n";
 
         $arrModulos = array();
 
@@ -105,15 +107,17 @@ class InscripcionInterface
             echo "+/////////////////////////////+\n";
             echo "// Error al crear inscripción. //\n";
             echo "+/////////////////////////////+\n";
-            echo "Presione Enter para inscripción...";
-            fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function eliminarInscripcion()
     {
-        echo "+- Eliminar Inscripción ------------------\n";
+        system('clear');
+        echo "+- Eliminar Inscripción -----------------------\n";
 
         echo "| Ingrese la identificación de la inscripción: ";
         $id = trim(fgets(STDIN));
@@ -128,19 +132,23 @@ class InscripcionInterface
             echo "Presione Enter para continuar...";
             fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
-
+    
     private function modificarInscripcion()
     {
-        echo "+- Modificar Inscripción -----------------\n";
+        system('clear');
+        echo "+- Modificar Inscripción ----------------------\n";
 
         do {
             echo "| Ingrese la identificación de la inscripción: ";
             $id = trim(fgets(STDIN));
             $existeInscripcion = InscripcionControl::existeInscripcion($id);
             if (!$existeInscripcion) {
-                echo "No existe inscripción con id $id\n";
+                echo "| No existe inscripción con id $id\n";
             }
         } while (!$existeInscripcion);
 
@@ -150,7 +158,7 @@ class InscripcionInterface
         $fecha = $inscripcion->getFecha();
         $modulosInscripcion = $inscripcion->getModulos();
 
-        echo "Modulos inscriptos:\n";
+        echo "| Modulos inscriptos:\n";
         foreach ($modulosInscripcion as $modulo) {
             echo $modulo->__toString() . "\n";
         }
@@ -195,15 +203,17 @@ class InscripcionInterface
             echo "+//////////////////////////////////////+\n";
             echo "// Error al modificar la inscripción. //\n";
             echo "+//////////////////////////////////////+\n";
-            echo "Presione Enter para continuar...";
-            fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function listarInscripciones()
     {
-        echo "+- Listar Inscripciones ------------------\n";
+        system('clear');
+        echo "+- Listar Inscripciones -----------------------\n";
 
         $inscripciones = InscripcionControl::listarInscripciones();
         if (empty($inscripciones)) {
@@ -214,7 +224,10 @@ class InscripcionInterface
                 echo "\n";
             }
         }
-        echo "+-----------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function mostrarListadoModulos()

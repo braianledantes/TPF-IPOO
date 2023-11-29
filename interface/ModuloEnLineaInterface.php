@@ -7,6 +7,7 @@ class ModuloEnLineaInterface
     public function menuModuloEnLinea()
     {
         do {
+            system('clear');
             echo "+- MENÚ DE MÓDULOS EN LINEA ------+\n";
             echo "| 1. Ingresar                     |\n";
             echo "| 2. Modificar                    |\n";
@@ -38,11 +39,13 @@ class ModuloEnLineaInterface
                     break;
             }
         } while ($opcion != 0);
+        system('clear');
     }
 
     private function crearModuloEnLinea()
     {
-        echo "+- Crear Módulo En Linea ---------------------\n";
+        system('clear');
+        echo "+- Crear Módulo En Linea ----------------------\n";
 
         do {
             echo "| Ingrese el id de la actividad que pertenece: ";
@@ -86,15 +89,17 @@ class ModuloEnLineaInterface
             echo "+//////////////////////////////////////+\n";
             echo "// Error al crear la módulo en linea. //\n";
             echo "+//////////////////////////////////////+\n";
-            echo "Presione Enter para continuar...";
-            fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function eliminarModuloEnLinea()
     {
-        echo "+- Eliminar Módulo En Linea ------------------\n";
+        system('clear');
+        echo "+- Eliminar Módulo En Linea -------------------\n";
         echo "| Ingrese la identificación de la módulo: ";
         $id = trim(fgets(STDIN));
 
@@ -108,12 +113,16 @@ class ModuloEnLineaInterface
             echo "Presione Enter para continuar...";
             fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function modificarModuloEnLinea()
     {
-        echo "+- Modificar Módulo En Linea -----------------\n";
+        system('clear');
+        echo "+- Modificar Módulo En Linea ------------------\n";
         echo "| Ingrese la identificación del módulo: ";
         $id = trim(fgets(STDIN));
 
@@ -178,15 +187,17 @@ class ModuloEnLineaInterface
             echo "+/////////////////////////////////+\n";
             echo "// Error al modificar el módulo. //\n";
             echo "+/////////////////////////////////+\n";
-            echo "Presione Enter para continuar...";
-            fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function listarModulosEnLinea()
     {
-        echo "+- Listar Módulos ------------------\n";
+        system('clear');
+        echo "+- Listar Módulos -----------------------------\n";
 
         $moduloes = ModuloEnLineaControl::listarModuloEnLineas();
         if (empty($moduloes)) {
@@ -197,6 +208,9 @@ class ModuloEnLineaInterface
                 echo "\n";
             }
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 }

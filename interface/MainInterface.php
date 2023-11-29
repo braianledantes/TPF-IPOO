@@ -28,6 +28,7 @@ class MainInterface
     public function menuPrincipal()
     {
         do {
+            system('clear');
             echo "+- MENÚ PRINCIPAL -------------------+\n";
             echo "| 1. ABM de actividades              |\n";
             echo "| 2. ABM de módulos                  |\n";
@@ -79,11 +80,13 @@ class MainInterface
                     break;
             }
         } while ($opcion != 0);
+        system('clear');
     }
 
     private function visualizarInscripciones()
     {
-        // Visualizar todas las inscripciones realizadas.
+        system('clear');
+        echo "+- VISUALIZAR INSCRIPCIONES -------------------\n";
         $inscripciones = InscripcionControl::listarInscripciones();
         if (empty($inscripciones)) {
             echo "| No hay inscripciones registradas.\n";
@@ -93,11 +96,16 @@ class MainInterface
                 echo "\n";
             }
         }
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function visualizarInscripcionesDeModulo()
     {
-        // Visualizar todas las inscripciones realizadas de un modulo determinado.
+        system('clear');
+        echo "+- VISUALIZAR INSCRIPCIONES DE UN MODULO ------\n";
         echo "| Ingrese la identificación del módulo: ";
         $idModulo = trim(fgets(STDIN));
         $existeInscripcion = ModuloControl::existeModulo($idModulo);
@@ -114,10 +122,16 @@ class MainInterface
                 }
             }
         }
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function mostrarInscripcionesDeUnaActividad()
     {
+        system('clear');
+        echo "+- VISUALIZAR INSCRIPCIONES DE UNA ACTIVIDAD --\n";
         echo "| Ingrese la identificación de la actividad: ";
         $idActividad = trim(fgets(STDIN));
         $existeInscripcion = ActividadControl::existeActividad($idActividad);
@@ -134,15 +148,21 @@ class MainInterface
                 }
             }
         }
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function mostrarActividadesDeIngresante()
     {
+        system('clear');
+        echo "+- VISUALIZAR ACTIVIDADES DE INGRESANTE -------\n";
         echo "| Ingrese el legajo del ingresante: ";
         $legajo = trim(fgets(STDIN));
         $existeIngresante = IngresanteControl::existeIngresante($legajo);
         if (!$existeIngresante) {
-            echo "No existe ingresante con legajo $legajo\n";
+            echo "| No existe ingresante con legajo $legajo\n";
         } else {
             $actividades = ActividadControl::listarActividadesDeIngresante($legajo);
             if (empty($actividades)) {
@@ -154,6 +174,10 @@ class MainInterface
                 }
             }
         }
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 }
 

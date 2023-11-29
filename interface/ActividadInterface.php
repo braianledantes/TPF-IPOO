@@ -6,6 +6,7 @@ class ActividadInterface
     public function menuActividad()
     {
         do {
+            system('clear');
             echo "+- MENÚ DE ACTIVIDADES -----------+\n";
             echo "| 1. Ingresar                     |\n";
             echo "| 2. Modificar                    |\n";
@@ -37,11 +38,13 @@ class ActividadInterface
                     break;
             }
         } while ($opcion != 0);
+        system('clear');
     }
 
     private function crearActividad()
     {
-        echo "+- Crear Actividad ---------------------\n";
+        system('clear');
+        echo "+- Crear Actividad ----------------------------\n";
 
         echo "| Ingrese la descripción corta: ";
         $descripcionCorta = trim(fgets(STDIN));
@@ -55,15 +58,17 @@ class ActividadInterface
             echo "+/////////////////////////////+\n";
             echo "// Error al crear actividad. //\n";
             echo "+/////////////////////////////+\n";
-            echo "Presione Enter para continuar...";
-            fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function eliminarActividad()
     {
-        echo "+- Eliminar Actividad ------------------\n";
+        system('clear');
+        echo "+- Eliminar Actividad -------------------------\n";
 
         echo "| Ingrese la identificación de la actividad: ";
         $id = trim(fgets(STDIN));
@@ -75,15 +80,17 @@ class ActividadInterface
             echo "+////////////////////////////////////+\n";
             echo "// Error al eliminar actividad $id. //\n";
             echo "+////////////////////////////////////+\n";
-            echo "Presione Enter para continuar...";
-            fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function modificarActividad()
     {
-        echo "+- Modificar Actividad -----------------\n";
+        system('clear');
+        echo "+- Modificar Actividad ------------------------\n";
 
         do {
             echo "| Ingrese la identificación de la actividad: ";
@@ -114,15 +121,17 @@ class ActividadInterface
             echo "+////////////////////////////////////+\n";
             echo "// Error al modificar la actividad. //\n";
             echo "+////////////////////////////////////+\n";
-            echo "Presione Enter para continuar...";
-            fgets(STDIN);
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 
     private function listarActividades()
     {
-        echo "+- Listar Actividades ------------------\n";
+        system('clear');
+        echo "+- Listar Actividades -------------------------\n";
 
         $actividades = ActividadControl::listarActividades();
         if (empty($actividades)) {
@@ -133,6 +142,9 @@ class ActividadInterface
                 echo "\n";
             }
         }
-        echo "+---------------------------------------\n";
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
     }
 }
