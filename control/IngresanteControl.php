@@ -8,7 +8,8 @@ class IngresanteControl
         $dni,
         $nombre,
         $apellido,
-        $correoElectronico
+        $correoElectronico,
+        $idInscripcion
     ) {
         $ingresanteNuevo = new Ingresante();
         $ingresanteNuevo->cargar(
@@ -16,7 +17,8 @@ class IngresanteControl
             $dni,
             $nombre,
             $apellido,
-            $correoElectronico
+            $correoElectronico,
+            $idInscripcion
         );
         $resp = $ingresanteNuevo->insertar();
         return $resp;
@@ -42,7 +44,7 @@ class IngresanteControl
     public static function eliminarIngresante($legajo)
     {
         $ingresante = new Ingresante();
-        $ingresante->cargar($legajo, "", "", "", "");
+        $ingresante->cargar($legajo, "", "", "", "", 0);
         $resp = $ingresante->eliminar();
         return $resp;
     }
@@ -60,7 +62,8 @@ class IngresanteControl
             $dni,
             $nombre,
             $apellido,
-            $correoElectronico
+            $correoElectronico,
+            0
         );
         $resp = $ingresante->modificar();
         return $resp;
