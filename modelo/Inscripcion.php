@@ -73,29 +73,24 @@ class Inscripcion extends ORM
     {
         $db = new BaseDatos();
         $consulta = "SELECT * FROM inscripcion WHERE id = '$id'";
+        $result = false;
 
-        if (!$db->Iniciar()) {
+        if (
+            $db->Iniciar() &&
+            $db->Ejecutar($consulta) &&
+            $registro = $db->Registro()
+        ) {
+            $this->cargar(
+                $id,
+                $registro['fecha'],
+                $registro['costo_final']
+            );
+            $result = true;
+        } else {
             $this->setMensajeOperacion($db->getError());
-            return false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        $registro = $db->Registro();
-
-        if (!$registro) {
-            return false;
-        }
-
-        $this->cargar(
-            $id,
-            $registro['fecha'],
-            $registro['costo_final']
-        );
-        return true;
+        return $result;
     }
 
     public function insertar()
@@ -103,21 +98,19 @@ class Inscripcion extends ORM
         $db = new BaseDatos();
         $consulta = "INSERT INTO inscripcion (fecha, costo_final) 
                      VALUES ('$this->fecha', '$this->costoFinal')";
+        $result = false;
 
-        if (!$db->Iniciar()) {
+        if (
+            $db->Iniciar() &&
+            $id = $db->devuelveIDInsercion($consulta)
+        ) {
+            $this->setId($id);
+            $result = $this->inscribirAModulos($db);
+        } else {
             $this->setMensajeOperacion($db->getError());
-            return false;
         }
 
-        $id = $db->devuelveIDInsercion($consulta);
-
-        if (!$id) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        $this->setId($id);
-        return $this->inscribirAModulos($db);
+        return $result;
     }
 
     public function modificar()
@@ -128,40 +121,28 @@ class Inscripcion extends ORM
                      fecha = '$this->fecha', 
                      costo_final = '$this->costoFinal'
                      WHERE id = '$this->id'";
+        $result = true;
 
-        if (!$db->Iniciar()) {
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = $this->eliminarModulos($db) && $this->inscribirAModulos($db);
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        if (!$this->eliminarModulos($db)) {
-            return false;
-        }
-
-        return $this->inscribirAModulos($db);
+        return $result;
     }
 
     public function eliminar()
     {
         $db = new BaseDatos();
         $consulta = "DELETE FROM inscripcion WHERE id = '$this->id'";
+        $result = true;
 
-        if (!$db->Iniciar()) {
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        return true;
+        return $result;
     }
 
     public static function listar()
@@ -170,19 +151,16 @@ class Inscripcion extends ORM
         $consulta = "SELECT * FROM inscripcion ORDER BY id";
         $arrInscripciones = array();
 
-        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
-            // $this->setMensajeOperacion($db->getError());
-            return $arrInscripciones;
-        }
-
-        while ($registro = $db->Registro()) {
-            $inscripcion = new Inscripcion();
-            $inscripcion->cargar(
-                $registro['id'],
-                $registro['fecha'],
-                $registro['costo_final']
-            );
-            array_push($arrInscripciones, $inscripcion);
+        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
+            while ($registro = $db->Registro()) {
+                $inscripcion = new Inscripcion();
+                $inscripcion->cargar(
+                    $registro['id'],
+                    $registro['fecha'],
+                    $registro['costo_final']
+                );
+                array_push($arrInscripciones, $inscripcion);
+            }
         }
 
         return $arrInscripciones;
@@ -196,19 +174,16 @@ class Inscripcion extends ORM
                      WHERE id_modulo = '$idModulo'";
         $arrInscripciones = array();
 
-        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
-            // $this->setMensajeOperacion($db->getError());
-            return $arrInscripciones;
-        }
-
-        while ($registro = $db->Registro()) {
-            $inscripcion = new Inscripcion();
-            $inscripcion->cargar(
-                $registro['id'],
-                $registro['fecha'],
-                $registro['costo_final']
-            );
-            array_push($arrInscripciones, $inscripcion);
+        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
+            while ($registro = $db->Registro()) {
+                $inscripcion = new Inscripcion();
+                $inscripcion->cargar(
+                    $registro['id'],
+                    $registro['fecha'],
+                    $registro['costo_final']
+                );
+                array_push($arrInscripciones, $inscripcion);
+            }
         }
 
         return $arrInscripciones;
@@ -223,19 +198,16 @@ class Inscripcion extends ORM
                      WHERE m.id_actividad = '$idActividad'";
         $arrInscripciones = array();
 
-        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
-            // $this->setMensajeOperacion($db->getError());
-            return $arrInscripciones;
-        }
-
-        while ($registro = $db->Registro()) {
-            $inscripcion = new Inscripcion();
-            $inscripcion->cargar(
-                $registro['id'],
-                $registro['fecha'],
-                $registro['costo_final']
-            );
-            array_push($arrInscripciones, $inscripcion);
+        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
+            while ($registro = $db->Registro()) {
+                $inscripcion = new Inscripcion();
+                $inscripcion->cargar(
+                    $registro['id'],
+                    $registro['fecha'],
+                    $registro['costo_final']
+                );
+                array_push($arrInscripciones, $inscripcion);
+            }
         }
 
         return $arrInscripciones;
@@ -243,6 +215,7 @@ class Inscripcion extends ORM
 
     private function inscribirAModulos($db)
     {
+        $result = true;
         if ($this->modulos) {
             $consulta = "INSERT INTO modulo_inscripcion (id_modulo, id_inscripcion) VALUES ";
             foreach ($this->modulos as $modulo) {
@@ -253,21 +226,22 @@ class Inscripcion extends ORM
 
             if (!$db->Ejecutar($consulta)) {
                 $this->setMensajeOperacion($db->getError());
-                return false;
+                $result = false;
             }
         }
-        return true;
+        return $result;
     }
 
     private function eliminarModulos($db)
     {
+        $result = true;
         $consulta = "DELETE FROM modulo_inscripcion WHERE id = '$this->id'";
 
         if (!$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = false;
         }
 
-        return true;
+        return $result;
     }
 }
