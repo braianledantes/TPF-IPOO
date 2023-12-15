@@ -50,14 +50,15 @@ class ModuloEnLinea extends Modulo
         $this->bonificacion = $bonificacion;
     }
 
-    public function darCostoModulo() {
+    public function darCostoModulo()
+    {
         return $this->costo * (1 - ($this->bonificacion / 100));
     }
 
     public function __toString()
     {
-        return 
-        "{\n id: $this->id,\n idActividad: $this->idActividad,\n descripcion: $this->descripcion,\n topeInscripciones: $this->topeInscripciones,\n costo: $this->costo,\n horarioInicio: $this->horarioInicio,\n horarioCierre: $this->horarioCierre,\n link: $this->link,\n bonificacion: $this->bonificacion\n}";
+        return
+            "{\n id: $this->id,\n idActividad: $this->idActividad,\n descripcion: $this->descripcion,\n topeInscripciones: $this->topeInscripciones,\n costo: $this->costo,\n horarioInicio: $this->horarioInicio,\n horarioCierre: $this->horarioCierre,\n link: $this->link,\n bonificacion: $this->bonificacion\n}";
     }
 
     public function buscar($id)
@@ -67,81 +68,66 @@ class ModuloEnLinea extends Modulo
                      FROM modulo_en_linea AS ml 
                      INNER JOIN modulo AS m ON ml.id = m.id 
                      WHERE m.id = '$id'";
-
-        if (!$db->Iniciar()) {
+        $result = true;
+        if (
+            $db->Iniciar() &&
+            $db->Ejecutar($consulta) &&
+            $registro = $db->Registro()
+        ) {
+            $this->cargarr(
+                $id,
+                $registro['id_actividad'],
+                $registro['descripcion'],
+                $registro['tope_inscripciones'],
+                $registro['costo'],
+                $registro['horario_inicio'],
+                $registro['horario_cierre'],
+                $registro['link'],
+                $registro['bonificacion']
+            );
+        } else {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        $registro = $db->Registro();
-
-        if (!$registro) {
-            return false;
-        }
-
-        $this->cargarr(
-            $id,
-            $registro['id_actividad'],
-            $registro['descripcion'],
-            $registro['tope_inscripciones'],
-            $registro['costo'],
-            $registro['horario_inicio'],
-            $registro['horario_cierre'],
-            $registro['link'],
-            $registro['bonificacion']
-        );
-        return true;
+        return $result;
     }
 
     public function insertar()
     {
-        if (parent::insertar()) {
+        $result = parent::insertar();
+        if ($result) {
             $db = new BaseDatos();
             $consulta = "INSERT INTO modulo_en_linea (id, link, bonificacion) 
                      VALUES ('$this->id', '$this->link', '$this->bonificacion')";
 
-            if (!$db->Iniciar()) {
+            if ($db->Iniciar()) {
+                $db->devuelveIDInsercion($consulta);
+                // no setea el id devuelto porque la hace la funcion del padre
+            } else {
                 $this->setMensajeOperacion($db->getError());
-                return false;
+                $result = false;
             }
-
-            $db->devuelveIDInsercion($consulta);
-            // no setea el id devuelto porque la hace la funcion del padre
-            return true;
-        } else {
-            return false;
         }
+        return $result;
     }
 
     public function modificar()
     {
-        if (parent::modificar()) {
+        $result = parent::modificar();
+        if ($result) {
             $db = new BaseDatos();
             $consulta = "UPDATE modulo_en_linea SET 
                          link = '$this->link', 
                          bonificacion = '$this->bonificacion'
                          WHERE id = '$this->id'";
-    
-            if (!$db->Iniciar()) {
+
+            if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
                 $this->setMensajeOperacion($db->getError());
-                return false;
+                $result = false;
             }
-    
-            if (!$db->Ejecutar($consulta)) {
-                $this->setMensajeOperacion($db->getError());
-                return false;
-            }
-    
-            return true;
-        } else {
-            return false;
         }
-        
+        return $result;
     }
 
     public function eliminar()
@@ -158,25 +144,22 @@ class ModuloEnLinea extends Modulo
                      ORDER BY m.id";
         $arrModulos = array();
 
-        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
-            // $this->setMensajeOperacion($db->getError());
-            return $arrModulos;
-        }
-
-        while ($registro = $db->Registro()) {
-            $modulo = new ModuloEnLinea();
-            $modulo->cargarr(
-                $registro['id'],
-                $registro['id_actividad'],
-                $registro['descripcion'],
-                $registro['tope_inscripciones'],
-                $registro['costo'],
-                $registro['horario_inicio'],
-                $registro['horario_cierre'],
-                $registro['link'],
-                $registro['bonificacion']
-            );
-            array_push($arrModulos, $modulo);
+        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
+            while ($registro = $db->Registro()) {
+                $modulo = new ModuloEnLinea();
+                $modulo->cargarr(
+                    $registro['id'],
+                    $registro['id_actividad'],
+                    $registro['descripcion'],
+                    $registro['tope_inscripciones'],
+                    $registro['costo'],
+                    $registro['horario_inicio'],
+                    $registro['horario_cierre'],
+                    $registro['link'],
+                    $registro['bonificacion']
+                );
+                array_push($arrModulos, $modulo);
+            }
         }
 
         return $arrModulos;
