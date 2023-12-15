@@ -70,82 +70,67 @@ class Actividad extends ORM
     {
         $db = new BaseDatos();
         $consulta = "SELECT * FROM actividad WHERE id = '$id'";
+        $result = false;
 
-        if (!$db->Iniciar()) {
+        if (
+            $db->Iniciar() &&
+            $db->Ejecutar($consulta) &&
+            $registro = $db->Registro()
+        ) {
+            $this->cargar($id, $registro['descripcion_corta'], $registro['descripcion_larga']);
+            $result = true;
+        } else {
             $this->setMensajeOperacion($db->getError());
-            return false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        $registro = $db->Registro();
-
-        if (!$registro) {
-            return false;
-        }
-
-        $this->cargar($id, $registro['descripcion_corta'], $registro['descripcion_larga']);
-        return true;
+        return $result;
     }
 
     public function insertar()
     {
+        $result = false;
         $db = new BaseDatos();
         $consulta = "INSERT INTO actividad (descripcion_corta, descripcion_larga) VALUES ('$this->descripcionCorta', '$this->descripcionLarga')";
 
-        if (!$db->Iniciar()) {
+        if (
+            $db->Iniciar() &&
+            $id = $db->devuelveIDInsercion($consulta)
+        ) {
+            $this->setId($id);
+            $result = true;
+        } else {
             $this->setMensajeOperacion($db->getError());
-            return false;
         }
 
-        $id = $db->devuelveIDInsercion($consulta);
-
-        if (!$id) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        $this->setId($id);
-        return true;
+        return $result;
     }
 
     public function modificar()
     {
+        $result = true;
         $db = new BaseDatos();
         $consulta = "UPDATE actividad SET descripcion_corta = '$this->descripcionCorta', descripcion_larga = '$this->descripcionLarga' WHERE id = '$this->id'";
 
-        if (!$db->Iniciar()) {
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        return true;
+        return $result;
     }
 
     public function eliminar()
     {
         $db = new BaseDatos();
         $consulta = "DELETE FROM actividad WHERE id = '$this->id'";
+        $result = true;
 
-        if (!$db->Iniciar()) {
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        return true;
+        return $result;
     }
 
     public function __toString()
@@ -159,21 +144,19 @@ class Actividad extends ORM
         $consulta = "SELECT * FROM actividad ORDER BY id";
         $arrActividades = array();
 
-        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
-            // $this->setMensajeOperacion($db->getError());
-            return $arrActividades;
-        }
-
-        while ($registro = $db->Registro()) {
-            $actividad = new Actividad();
-            $actividad->cargar($registro['id'], $registro['descripcion_corta'], $registro['descripcion_larga']);
-            array_push($arrActividades, $actividad);
+        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
+            while ($registro = $db->Registro()) {
+                $actividad = new Actividad();
+                $actividad->cargar($registro['id'], $registro['descripcion_corta'], $registro['descripcion_larga']);
+                array_push($arrActividades, $actividad);
+            }
         }
 
         return $arrActividades;
     }
 
-    public static function listarActividadesDeIngresante($legajo) {
+    public static function listarActividadesDeIngresante($legajo)
+    {
         $db = new BaseDatos();
         $consulta = "SELECT a.id, a.descripcion_corta, a.descripcion_larga FROM actividad AS a
                      INNER JOIN modulo AS m ON a.id = m.id_actividad
@@ -182,15 +165,12 @@ class Actividad extends ORM
                      GROUP BY a.id, a.descripcion_corta, a.descripcion_larga";
         $arrActividades = array();
 
-        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
-            // $this->setMensajeOperacion($db->getError());
-            return $arrActividades;
-        }
-
-        while ($registro = $db->Registro()) {
-            $actividad = new Actividad();
-            $actividad->cargar($registro['id'], $registro['descripcion_corta'], $registro['descripcion_larga']);
-            array_push($arrActividades, $actividad);
+        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
+            while ($registro = $db->Registro()) {
+                $actividad = new Actividad();
+                $actividad->cargar($registro['id'], $registro['descripcion_corta'], $registro['descripcion_larga']);
+                array_push($arrActividades, $actividad);
+            }
         }
 
         return $arrActividades;
