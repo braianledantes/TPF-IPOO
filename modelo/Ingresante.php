@@ -85,36 +85,32 @@ class Ingresante extends ORM
     {
         $db = new BaseDatos();
         $consulta = "SELECT * FROM ingresante WHERE legajo = '$legajo'";
+        $result = false;
 
-        if (!$db->Iniciar()) {
+        if (
+            $db->Iniciar() &&
+            $db->Ejecutar($consulta) &&
+            $registro = $db->Registro()
+        ) {
+            $this->cargar(
+                $legajo,
+                $registro['dni'],
+                $registro['nombre'],
+                $registro['apellido'],
+                $registro['correo_electronico'],
+                $registro['id_inscripcion']
+            );
+            $result = true;
+        } else {
             $this->setMensajeOperacion($db->getError());
-            return false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        $registro = $db->Registro();
-
-        if (!$registro) {
-            return false;
-        }
-
-        $this->cargar(
-            $legajo,
-            $registro['dni'],
-            $registro['nombre'],
-            $registro['apellido'],
-            $registro['correo_electronico'],
-            $registro['id_inscripcion']
-        );
-        return true;
+        return $result;
     }
 
     public function insertar()
     {
+        $result = false;
         $db = new BaseDatos();
         $idInscripcion = $this->inscripcion->getId();
         $consulta = "INSERT INTO ingresante (legajo, dni, nombre, apellido, correo_electronico, id_inscripcion) 
@@ -124,21 +120,17 @@ class Ingresante extends ORM
                              '$this->apellido',
                              '$this->correoElectronico',
                              '$idInscripcion')";
-
-        if (!$db->Iniciar()) {
+        if (
+            $db->Iniciar() &&
+            $id = $db->devuelveIDInsercion($consulta)
+        ) {
+            $this->setLegajo($id);
+            $result = true;
+        } else {
             $this->setMensajeOperacion($db->getError());
-            return false;
         }
 
-        $id = $db->devuelveIDInsercion($consulta);
-
-        if (!$id) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        $this->setLegajo($id);
-        return true;
+        return $result;
     }
 
     public function modificar()
@@ -153,36 +145,28 @@ class Ingresante extends ORM
                      correo_electronico = '$this->correoElectronico',
                      id_inscripcion = '$idInsgresante',
                      WHERE legajo = '$this->legajo'";
+        $result = true;
 
-        if (!$db->Iniciar()) {
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        return true;
+        return $result;
     }
 
     public function eliminar()
     {
         $db = new BaseDatos();
         $consulta = "DELETE FROM ingresante WHERE legajo = '$this->legajo'";
+        $result = true;
 
-        if (!$db->Iniciar()) {
+        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
             $this->setMensajeOperacion($db->getError());
-            return false;
+            $result = false;
         }
 
-        if (!$db->Ejecutar($consulta)) {
-            $this->setMensajeOperacion($db->getError());
-            return false;
-        }
-
-        return true;
+        return $result;
     }
 
     public static function listar()
@@ -191,22 +175,19 @@ class Ingresante extends ORM
         $consulta = "SELECT * FROM ingresante ORDER BY legajo";
         $arrIngresantes = array();
 
-        if (!$db->Iniciar() || !$db->Ejecutar($consulta)) {
-            // $this->setMensajeOperacion($db->getError());
-            return $arrIngresantes;
-        }
-
-        while ($registro = $db->Registro()) {
-            $ingresante = new Ingresante();
-            $ingresante->cargar(
-                $registro['legajo'],
-                $registro['dni'],
-                $registro['nombre'],
-                $registro['apellido'],
-                $registro['correo_electronido'],
-                $registro['id_inscripcion']
-            );
-            array_push($arrIngresantes, $ingresante);
+        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
+            while ($registro = $db->Registro()) {
+                $ingresante = new Ingresante();
+                $ingresante->cargar(
+                    $registro['legajo'],
+                    $registro['dni'],
+                    $registro['nombre'],
+                    $registro['apellido'], 
+                    $registro['correo_electronido'],
+                    $registro['id_inscripcion']
+                );
+                array_push($arrIngresantes, $ingresante);
+            }
         }
 
         return $arrIngresantes;
