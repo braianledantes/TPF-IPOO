@@ -252,17 +252,13 @@ class Modulo extends ORM
 
         if ($db->Iniciar() && $db->Ejecutar($consulta)) {
             while ($registro = $db->Registro()) {
-                $modulo = new Modulo();
-                $modulo->cargar(
+                $inscripcion = new Inscripcion();
+                $inscripcion->cargar(
                     $registro['id'],
-                    $registro['id_actividad'],
-                    $registro['descripcion'],
-                    $registro['tope_inscripciones'],
-                    $registro['costo'],
-                    $registro['horario_inicio'],
-                    $registro['horario_cierre']
+                    $registro['fecha'],
+                    $registro['costo_final']
                 );
-                array_push($arrModulos, $modulo);
+                array_push($arrInscripciones, $inscripcion);
             }
         }
 
