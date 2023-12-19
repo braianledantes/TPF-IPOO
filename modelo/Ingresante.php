@@ -118,6 +118,33 @@ class Ingresante extends ORM
         return $result;
     }
 
+    public function buscarPorDni($dni)
+    {
+        $db = new BaseDatos();
+        $consulta = "SELECT * FROM ingresante WHERE dni = '$dni'";
+        $result = false;
+
+        if (
+            $db->Iniciar() &&
+            $db->Ejecutar($consulta) &&
+            $registro = $db->Registro()
+        ) {
+            $this->cargar(
+                $registro['legajo'],
+                $registro['dni'],
+                $registro['nombre'],
+                $registro['apellido'],
+                $registro['correo_electronico'],
+                $registro['id_inscripcion']
+            );
+            $result = true;
+        } else {
+            $this->setMensajeOperacion($db->getError());
+        }
+
+        return $result;
+    }
+
     public function insertar()
     {
         $result = false;
@@ -193,7 +220,7 @@ class Ingresante extends ORM
                     $registro['dni'],
                     $registro['nombre'],
                     $registro['apellido'], 
-                    $registro['correo_electronido'],
+                    $registro['correo_electronico'],
                     $registro['id_inscripcion']
                 );
                 array_push($arrIngresantes, $ingresante);

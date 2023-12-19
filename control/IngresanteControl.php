@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../modelo/Ingresante.php";
+require_once __DIR__ . "/../modelo/Modulo.php";
+require_once __DIR__ . "/../modelo/Inscripcion.php";
 
 class IngresanteControl
 {
@@ -72,5 +74,39 @@ class IngresanteControl
     public static function listarIngresantes()
     {
         return Ingresante::listar();
+    }
+
+    // Buscar dado un módulo todos aquellos registros que poseen el mismo DNI y aparecen mas de una vez
+    public static function listarIngresantesDeModuloConMismoDni($idModulo)
+    {
+        $ingresantes = array();
+
+        $modulo = new Modulo();
+        if ($modulo->buscar($idModulo)) {
+            $dniIngresantes = array();
+            $listaIngresantes = Ingresante::listar();
+
+            // se obtienen los dni de los ingresantes del modulo
+            foreach ($listaIngresantes as $ingresante) {
+                if (in_array($ingresante->getInscripcion(), $modulo->getInscripciones())) {
+                    array_push($dniIngresantes, $ingresante->getDni());
+                }
+            }
+
+            // cuenta los valores
+            $dniIngresantes = array_count_values($dniIngresantes);
+
+            // obtiene los ingresantes que esten mas de una vez
+            foreach ($dniIngresantes as $dni => $cant) {
+                if ($cant > 1) {
+                    $ingresante = new Ingresante();
+                    if ($ingresante->buscarPorDni($dni)) {
+                        array_push($ingresantes, $ingresante);
+                    }
+                }
+            }
+        }
+
+        return $ingresantes;
     }
 }

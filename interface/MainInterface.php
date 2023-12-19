@@ -29,19 +29,19 @@ class MainInterface
     {
         do {
             system('clear');
-            echo "+- MENÚ PRINCIPAL -------------------+\n";
-            echo "| 1. ABM de actividades              |\n";
-            echo "| 2. ABM de módulos                  |\n";
-            echo "| 3. ABM de módulos en línea         |\n";
-            echo "| 4. ABM de inscripciones            |\n";
-            echo "| 5. Ver todas las inscripciones     |\n";
-            echo "| 6. Ver inscripciones de módulo     |\n";
-            echo "| 7. Ver inscripciones de actividad  |\n";
-            echo "| 8.                                 |\n";
-            echo "| 9. Ver actividades de ingresante   |\n";
-            echo "| 0. Salir                           |\n";
-            echo "| Ingrese una opción:                |\n";
-            echo "+------------------------------------+\n";
+            echo "+- MENÚ PRINCIPAL ------------------------+\n";
+            echo "| 1. ABM de actividades                   |\n";
+            echo "| 2. ABM de módulos                       |\n";
+            echo "| 3. ABM de módulos en línea              |\n";
+            echo "| 4. ABM de inscripciones                 |\n";
+            echo "| 5. Ver todas las inscripciones          |\n";
+            echo "| 6. Ver inscripciones de módulo          |\n";
+            echo "| 7. Ver inscripciones de actividad       |\n";
+            echo "| 8. Ingresantes con mismo DNI en módulo  |\n";
+            echo "| 9. Ver actividades de ingresante        |\n";
+            echo "| 0. Salir                                |\n";
+            echo "| Ingrese una opción:                     |\n";
+            echo "+-----------------------------------------+\n";
             $opcion = intval(trim(fgets(STDIN)));
 
             switch ($opcion) {
@@ -67,7 +67,7 @@ class MainInterface
                     $this->mostrarInscripcionesDeUnaActividad();
                     break;
                 case 8:
-                    // TODO
+                    $this->buscarIngresantePorDniYModulo();
                     break;
                 case 9:
                     $this->mostrarActividadesDeIngresante();
@@ -170,6 +170,32 @@ class MainInterface
             } else {
                 foreach ($actividades as $actividad) {
                     echo $actividad->__toString();
+                    echo "\n";
+                }
+            }
+        }
+        echo "+----------------------------------------------\n";
+        echo "Presione Enter para continuar...";
+        fgets(STDIN);
+        system('clear');
+    }
+
+    private function buscarIngresantePorDniYModulo()
+    {
+        system('clear');
+        echo "+- VISUALIZAR INGRESANTES POR MODULO -------\n";
+        echo "| Ingrese el id del módulo: ";
+        $idModulo = trim(fgets(STDIN));
+        $existeModulo = ModuloControl::existeModulo($idModulo);
+        if (!$existeModulo) {
+            echo "| No existe módulo con id $idModulo\n";
+        } else {
+            $ingresantes = IngresanteControl::listarIngresantesDeModuloConMismoDni($idModulo);
+            if (empty($ingresantes)) {
+                echo "| No hay ingresantes con mismo DNI es este módulo.\n";
+            } else {
+                foreach ($ingresantes as $ingresante) {
+                    echo $ingresante;
                     echo "\n";
                 }
             }
