@@ -81,6 +81,16 @@ class Ingresante extends ORM
         $this->correoElectronico = $correoElectronico;
     }
 
+    public function getInscripcion()
+    {
+        return $this->inscripcion;
+    }
+
+    public function setInscripcion($inscripcion)
+    {
+        $this->inscripcion = $inscripcion;
+    }
+
     public function buscar($legajo)
     {
         $db = new BaseDatos();
