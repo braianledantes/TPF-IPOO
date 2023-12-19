@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . "/../modelo/Actividad.php";
+require_once __DIR__ . "/../modelo/Ingresante.php";
+require_once __DIR__ . "/../modelo/Modulo.php";
 
 class ActividadControl
 {
@@ -51,7 +53,23 @@ class ActividadControl
 
     public static function listarActividadesDeIngresante($legajo)
     {
-        return Actividad::listarActividadesDeIngresante($legajo);
+        $actividades = array();
+        $ingresante = new Ingresante();
+
+        if ($ingresante->buscar($legajo)) {
+
+            $modulos = Modulo::listar();
+            foreach ($modulos as $modulo) {
+                $actividad = new Actividad();
+                if (
+                    in_array($ingresante->getInscripcion(), $modulo->getInscripciones()) &&
+                    $actividad->buscar($modulo->getIdActividad())
+                ) {
+                    array_push($actividades, $actividad);
+                }
+            }
+        }
+
+        return array_unique($actividades);
     }
-    
 }

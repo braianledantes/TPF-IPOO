@@ -41,7 +41,7 @@ class Modulo extends ORM
         $this->costo = $costo;
         $this->horarioInicio = $horarioInicio;
         $this->horarioCierre = $horarioCierre;
-        $this->inscripciones = Modulo::listarInscripciones();
+        $this->inscripciones = Modulo::listarInscripciones($this->id);
     }
 
     public function getId()
@@ -242,12 +242,13 @@ class Modulo extends ORM
         return $arrModulos;
     }
 
-    public static function listarInscripciones()
+    public static function listarInscripciones($id)
     {
         $db = new BaseDatos();
         $consulta = "SELECT inscripcion.*
-                     FROM modulo_inscripcion
-                     INNER JOIN inscripcion ON id_inscripcion = inscripcion.id";
+                     FROM inscripcion
+                     INNER JOIN modulo_inscripcion ON id_inscripcion = id
+                     WHERE id_modulo = $id";
         $arrInscripciones = array();
 
         if ($db->Iniciar() && $db->Ejecutar($consulta)) {
