@@ -154,25 +154,4 @@ class Actividad extends ORM
 
         return $arrActividades;
     }
-
-    public static function listarActividadesDeIngresante($legajo)
-    {
-        $db = new BaseDatos();
-        $consulta = "SELECT a.id, a.descripcion_corta, a.descripcion_larga FROM actividad AS a
-                     INNER JOIN modulo AS m ON a.id = m.id_actividad
-                     INNER JOIN modulo_inscripcion AS mi ON mi.id_modulo = m.id
-                     INNER JOIN ingresante AS ing ON ing.id_inscripcion = mi.id_inscripcion AND ing.legajo = '$legajo'
-                     GROUP BY a.id, a.descripcion_corta, a.descripcion_larga";
-        $arrActividades = array();
-
-        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
-            while ($registro = $db->Registro()) {
-                $actividad = new Actividad();
-                $actividad->cargar($registro['id'], $registro['descripcion_corta'], $registro['descripcion_larga']);
-                array_push($arrActividades, $actividad);
-            }
-        }
-
-        return $arrActividades;
-    }
 }

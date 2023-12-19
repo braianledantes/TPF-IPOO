@@ -166,53 +166,6 @@ class Inscripcion extends ORM
         return $arrInscripciones;
     }
 
-    public static function listarInscripcionesDeModulo($idModulo)
-    {
-        $db = new BaseDatos();
-        $consulta = "SELECT inscripcion.* FROM inscripcion
-                     INNER JOIN modulo_inscripcion ON id = id_inscripcion
-                     WHERE id_modulo = '$idModulo'";
-        $arrInscripciones = array();
-
-        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
-            while ($registro = $db->Registro()) {
-                $inscripcion = new Inscripcion();
-                $inscripcion->cargar(
-                    $registro['id'],
-                    $registro['fecha'],
-                    $registro['costo_final']
-                );
-                array_push($arrInscripciones, $inscripcion);
-            }
-        }
-
-        return $arrInscripciones;
-    }
-
-    public static function listarInscripcionesDeActividad($idActividad)
-    {
-        $db = new BaseDatos();
-        $consulta = "SELECT i.* FROM inscripcion AS i
-                     INNER JOIN modulo_inscripcion AS mi ON i.id = mi.id_inscripcion
-                     INNER JOIN modulo AS m ON m.id = mi.id_modulo
-                     WHERE m.id_actividad = '$idActividad'";
-        $arrInscripciones = array();
-
-        if ($db->Iniciar() && $db->Ejecutar($consulta)) {
-            while ($registro = $db->Registro()) {
-                $inscripcion = new Inscripcion();
-                $inscripcion->cargar(
-                    $registro['id'],
-                    $registro['fecha'],
-                    $registro['costo_final']
-                );
-                array_push($arrInscripciones, $inscripcion);
-            }
-        }
-
-        return $arrInscripciones;
-    }
-
     private function inscribirAModulos($db)
     {
         $result = true;

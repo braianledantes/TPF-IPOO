@@ -242,7 +242,7 @@ class Modulo extends ORM
         return $arrModulos;
     }
 
-    public static function listarInscripciones($id)
+    private static function listarInscripciones($id)
     {
         $db = new BaseDatos();
         $consulta = "SELECT inscripcion.*
