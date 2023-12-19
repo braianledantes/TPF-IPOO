@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../modelo/Inscripcion.php";
 require_once __DIR__ . "/../modelo/Modulo.php";
+require_once __DIR__ . "/../modelo/Actividad.php";
 
 class InscripcionControl
 {
@@ -104,6 +105,13 @@ class InscripcionControl
 
     public static function listarInscripcionesDeActividad($idActividad)
     {
-        return Inscripcion::listarInscripcionesDeActividad($idActividad);
+        $arrInscripciones = array();
+        $actividad = new Actividad();
+        if ($actividad->buscar($idActividad)) {
+            foreach($actividad->getModulos() as $modulo) {
+                $arrInscripciones = array_merge($arrInscripciones, $modulo->getInscripciones());
+            }
+        }
+        return array_unique($arrInscripciones);
     }
 }
